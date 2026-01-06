@@ -1,7 +1,7 @@
 // Audio playback utility for queue announcements
 // Uses offline audio files from /public/sounds
 
-const BASE_URL = '/sounds';
+const BASE_URL = 'sounds';
 
 const playAudioSequence = async (files: string[]): Promise<void> => {
   for (const file of files) {
