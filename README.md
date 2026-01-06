@@ -1,73 +1,78 @@
-# Welcome to your Lovable project
+# Pendaftaran Rudep – Sistem Antrian Rumah Tahanan
 
-## Project info
+## Deskripsi Singkat
+Aplikasi **Pendaftaran Rudep** adalah sistem antrian berbasis web yang dirancang khusus untuk **Rumah Tahanan Negara Kelas I Depok**. Aplikasi ini menampilkan nomor antrian secara real‑time, memanggil nomor lewat speaker, dan mencetak tiket secara otomatis pada printer thermal. Semua proses dapat dioperasikan dengan **keyboard shortcuts**, sehingga petugas loket dapat melayani warga dengan cepat dan tanpa harus menyentuh layar.
 
-**URL**: https://lovable.dev/projects/3e809b36-f9b2-44c5-89f9-f21513273506
+## Fitur Utama
+- **Dua layanan utama**: 
+  - **Layanan Pendaftaran Kunjungan (A)**
+  - **Layanan Informasi & Pengaduan (B)**
+- **Panggilan loket otomatis** dengan suara (Text‑to‑Speech).
+- **Cetak tiket** langsung ke printer thermal.
+- **Reset antrian** seluruh nomor dengan satu klik.
+- **Statistik menunggu** menampilkan jumlah orang yang sedang menunggu tiap layanan.
+- **Keyboard shortcuts**:
+  - `Enter` → ambil nomor layanan **A**
+  - `.` atau `Delete` → ambil nomor layanan **B**
+  - `1‑3` → panggil nomor di loket 1‑3
+  - `4` → panggil nomor di loket informasi
+  - `0` → buka dialog reset antrian
+- **Desain modern** dengan animasi glow, dark mode, dan tampilan video profil.
 
-## How can I edit this code?
+## Cara Kerja (High‑Level)
+1. **Frontend** dibangun dengan **React**, **TypeScript**, dan **Vite**. Semua UI berada di folder `src/pages`.
+2. **State antrian** dikelola di `src/lib/queueStore.ts` yang menyimpan nomor antrian, status, dan layanan.
+3. **Panggilan suara** menggunakan modul `tts.ts` yang memanfaatkan Web Speech API.
+4. **Cetak tiket** dipanggil lewat `printTicket.ts` yang berkomunikasi dengan library `node-thermal-printer` (pada proses Electron).
+5. **Keyboard listener** di `Display.tsx` menangani semua shortcut dan men-trigger aksi di store.
 
-There are several ways of editing your application.
+## Instalasi & Menjalankan (Development)
+### Prasyarat
+- **Node.js** versi **18** atau lebih baru
+- **npm** (biasanya sudah terpasang bersama Node)
+- **Git** untuk meng‑clone repository
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/3e809b36-f9b2-44c5-89f9-f21513273506) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+### Langkah‑langkah
+```bash
+# 1. Clone repository
 git clone <YOUR_GIT_URL>
+cd "Pendaftaran Rudep"
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
+# 2. Install dependencies
 npm i
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# 3. Jalankan server development dengan hot‑reload
 npm run dev
 ```
+Aplikasi akan terbuka di `http://localhost:5173` (atau port yang ditunjukkan pada terminal).
 
-**Edit a file directly in GitHub**
+## Build & Deploy (Production)
+Untuk menghasilkan bundle produksi yang dapat dijalankan secara mandiri (misalnya dengan Electron):
+```bash
+# Build aplikasi web
+npm run build
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+# Jika menggunakan Electron, jalankan builder
+npm run electron:build   # perintah ini tergantung pada script yang ada di package.json
+```
+File hasil build berada di folder `dist/`.
 
-**Use GitHub Codespaces**
+## Panduan Penggunaan
+- **Header** menampilkan logo Kementerian Imigrasi, nama lembaga, tanggal & jam real‑time.
+- **Video profil** diputar otomatis di bagian atas kanan.
+- **Kotak statistik** menampilkan jumlah orang yang menunggu layanan A & B.
+- **Kolom loket** menampilkan nomor yang sedang dipanggil atau nomor terakhir yang selesai.
+- **Footer** berisi marquee teks informasi penting.
+- **Dialog reset** muncul ketika menekan tombol `0`; konfirmasi diperlukan sebelum semua nomor di‑reset ke 0.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Kontribusi
+1. Fork repository ini.
+2. Buat branch baru untuk fitur atau perbaikan (`git checkout -b fitur‑baru`).
+3. Lakukan perubahan, pastikan linting dan format tetap bersih.
+4. Buat pull request dengan deskripsi jelas.
 
-## What technologies are used for this project?
+## Lisensi
+Proyek ini dilisensikan di bawah **MIT License** – lihat file `LICENSE` untuk detail lebih lanjut.
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/3e809b36-f9b2-44c5-89f9-f21513273506) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+---
+*Dibuat dengan ❤️ oleh tim pengembang Pendaftaran Rudep*
