@@ -10,8 +10,8 @@ const generateTicketHTML = (ticket: QueueTicket, logoPath: string) => {
     ? "PENDAFTARAN KUNJUNGAN"
     : "INFORMASI & PENGADUAN";
 
-  const fullLogoPath = logoPath.startsWith('http') 
-    ? logoPath 
+  const fullLogoPath = logoPath.startsWith('http')
+    ? logoPath
     : window.location.origin + logoPath;
 
   return `
@@ -168,13 +168,13 @@ export const printTicketDirectly = async (ticket: QueueTicket) => {
 
   try {
     await waitForImages();
-    
+
     // Small delay to ensure rendering is complete
     setTimeout(() => {
       try {
         iframe.contentWindow?.focus();
         iframe.contentWindow?.print();
-        
+
         // Remove iframe after print dialog is handled
         // Note: print() is blocking in most browsers until dialog is closed
         setTimeout(() => {
