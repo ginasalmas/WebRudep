@@ -150,8 +150,7 @@ export const takeNumber = (serviceType: ServiceType): QueueTicket => {
 
 // Get allowed service types for a loket
 const getAllowedServiceType = (loket: number): ServiceType | null => {
-  if (loket >= 1 && loket <= 3) return 'A';
-  if (loket === 4) return 'B';
+  if (loket >= 1 && loket <= 4) return 'A';
   return null;
 };
 

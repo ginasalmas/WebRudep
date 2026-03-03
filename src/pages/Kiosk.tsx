@@ -14,7 +14,6 @@ import { id } from "date-fns/locale";
 
 const Kiosk = () => {
   const [waitingCountA, setWaitingCountA] = useState(0);
-  const [waitingCountB, setWaitingCountB] = useState(0);
   const [currentTime, setCurrentTime] = useState(new Date());
 
   const lastPress = useRef(0);
@@ -35,7 +34,6 @@ const Kiosk = () => {
     (e: KeyboardEvent) => {
       if (!throttle(300)) return;
       if (e.key === "Enter") handleTakeNumber("A");
-      if (e.key === ".") handleTakeNumber("B");
     },
     [handleTakeNumber]
   );
@@ -47,17 +45,11 @@ const Kiosk = () => {
 
   useEffect(() => {
     setWaitingCountA(getWaitingCount("A"));
-    setWaitingCountB(getWaitingCount("B"));
 
     const unsubscribe = subscribeToChanges((state) => {
       setWaitingCountA(
         state.tickets.filter(
           (t) => t.status === "waiting" && t.serviceType === "A"
-        ).length
-      );
-      setWaitingCountB(
-        state.tickets.filter(
-          (t) => t.status === "waiting" && t.serviceType === "B"
         ).length
       );
     });
@@ -110,50 +102,27 @@ const Kiosk = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-            {/* ===== SERVICE A ===== */}
+          <div className="grid grid-cols-1 gap-4 sm:gap-6">
+            {/* ##### SERVICE A ##### */}
             <div className="bg-card/10 rounded-xl p-4 sm:p-6 border border-gold/20">
               <Button
                 onClick={() => handleTakeNumber("A")}
-                className="w-full h-28 sm:h-32 md:h-40 text-sm sm:text-base md:text-xl font-bold bg-gradient-to-br from-gold to-gold-dark hover:from-gold-light hover:to-gold text-navy-dark rounded-xl flex flex-col gap-2 sm:gap-3"
+                className="w-full h-40 sm:h-48 md:h-56 text-lg sm:text-xl md:text-3xl font-bold bg-gradient-to-br from-gold to-gold-dark hover:from-gold-light hover:to-gold text-navy-dark rounded-xl flex flex-col gap-2 sm:gap-3"
               >
-                <UserPlus className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12" />
+                <UserPlus className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20" />
                 <span className="text-center leading-tight">
                   LAYANAN<br />PENDAFTARAN<br />KUNJUNGAN
                 </span>
               </Button>
 
-              <div className="mt-3 flex items-center justify-center gap-2 text-xs sm:text-sm text-primary-foreground/70">
-                <Users className="w-4 h-4" />
+              <div className="mt-4 flex items-center justify-center gap-2 text-sm sm:text-base text-primary-foreground/70">
+                <Users className="w-5 h-5" />
                 <span>
                   <strong className="text-gold">{waitingCountA}</strong> orang menunggu
                 </span>
               </div>
-              <p className="text-center text-[10px] sm:text-xs text-primary-foreground/50 mt-1">
-                Loket 1, 2, 3
-              </p>
-            </div>
-
-            {/* ===== SERVICE B ===== */}
-            <div className="bg-card/10 rounded-xl p-4 sm:p-6 border border-gold/20">
-              <Button
-                onClick={() => handleTakeNumber("B")}
-                className="w-full h-28 sm:h-32 md:h-40 text-sm sm:text-base md:text-xl font-bold bg-gradient-to-br from-emerald-500 to-emerald-700 hover:from-emerald-400 hover:to-emerald-600 text-white rounded-xl flex flex-col gap-2 sm:gap-3"
-              >
-                <MessageCircleQuestion className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12" />
-                <span className="text-center leading-tight">
-                  LAYANAN<br />INFORMASI &<br />PENGADUAN
-                </span>
-              </Button>
-
-              <div className="mt-3 flex items-center justify-center gap-2 text-xs sm:text-sm text-primary-foreground/70">
-                <Users className="w-4 h-4" />
-                <span>
-                  <strong className="text-emerald-400">{waitingCountB}</strong> orang menunggu
-                </span>
-              </div>
-              <p className="text-center text-[10px] sm:text-xs text-primary-foreground/50 mt-1">
-                Loket 4
+              <p className="text-center text-xs sm:text-sm text-primary-foreground/50 mt-2">
+                Loket 1, 2, 3, 4
               </p>
             </div>
           </div>
