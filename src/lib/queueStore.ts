@@ -63,7 +63,7 @@ const getEmptyCalledByLoket = (): CalledByLoket => ({
 export const getInitialState = (): QueueState => {
   const today = getTodayString();
   const stored = localStorage.getItem(STORAGE_KEY);
-  
+
   if (stored) {
     try {
       const parsed = JSON.parse(stored);
@@ -77,7 +77,7 @@ export const getInitialState = (): QueueState => {
           calledByLoket: getEmptyCalledByLoket(),
         };
       }
-      
+
       // Handle migration from old format
       if (parsed.currentNumber !== undefined && parsed.currentNumberA === undefined) {
         return {
@@ -92,7 +92,7 @@ export const getInitialState = (): QueueState => {
           calledByLoket: parseCalledByLoket(parsed.calledByLoket),
         };
       }
-      
+
       return {
         ...parsed,
         tickets: parsed.tickets.map(parseTicket),
@@ -102,7 +102,7 @@ export const getInitialState = (): QueueState => {
       // Invalid stored data
     }
   }
-  
+
   return {
     tickets: [],
     currentNumberA: 0,
@@ -123,7 +123,7 @@ export const saveState = (state: QueueState) => {
 
 export const takeNumber = (serviceType: ServiceType): QueueTicket => {
   const state = getInitialState();
-  
+
   let newNumber: number;
   if (serviceType === 'A') {
     newNumber = state.currentNumberA + 1;
@@ -132,7 +132,7 @@ export const takeNumber = (serviceType: ServiceType): QueueTicket => {
     newNumber = state.currentNumberB + 1;
     state.currentNumberB = newNumber;
   }
-  
+
   const ticket: QueueTicket = {
     id: `${getTodayString()}-${serviceType}-${newNumber}`,
     number: newNumber,
@@ -141,40 +141,41 @@ export const takeNumber = (serviceType: ServiceType): QueueTicket => {
     createdAt: new Date(),
     status: 'waiting',
   };
-  
+
   state.tickets.push(ticket);
   saveState(state);
-  
+
   return ticket;
 };
 
 // Get allowed service types for a loket
 const getAllowedServiceType = (loket: number): ServiceType | null => {
-  if (loket >= 1 && loket <= 4) return 'A';
+  if (loket >= 1 && loket <= 3) return 'A';
+  if (loket === 4) return 'B';
   return null;
 };
 
 export const callNext = (loket: number): QueueTicket | null => {
   const state = getInitialState();
   const allowedType = getAllowedServiceType(loket);
-  
+
   if (!allowedType) return null;
-  
+
   // Filter waiting tickets by service type
-  const waiting = state.tickets.filter(t => 
+  const waiting = state.tickets.filter(t =>
     t.status === 'waiting' && t.serviceType === allowedType
   );
-  
+
   if (waiting.length === 0) return null;
-  
+
   const next = waiting[0];
   next.status = 'called';
   next.loket = loket;
   next.calledAt = new Date();
-  
+
   const loketKey = loket as 1 | 2 | 3 | 4;
   state.calledByLoket[loketKey] = next;
-  
+
   saveState(state);
   return next;
 };
@@ -182,56 +183,56 @@ export const callNext = (loket: number): QueueTicket | null => {
 export const recallCurrent = (loket: number): QueueTicket | null => {
   const state = getInitialState();
   const loketKey = loket as 1 | 2 | 3 | 4;
-  
+
   if (loketKey < 1 || loketKey > 4) return null;
-  
+
   const current = state.calledByLoket[loketKey];
   if (!current) return null;
-  
+
   current.calledAt = new Date();
   state.calledByLoket[loketKey] = current;
   saveState(state);
-  
+
   return current;
 };
 
 export const skipCurrent = (loket: number): boolean => {
   const state = getInitialState();
   const loketKey = loket as 1 | 2 | 3 | 4;
-  
+
   if (loketKey < 1 || loketKey > 4) return false;
-  
+
   const current = state.calledByLoket[loketKey];
   if (!current) return false;
-  
+
   const ticket = state.tickets.find(t => t.id === current.id);
   if (ticket) {
     ticket.status = 'skipped';
   }
-  
+
   state.calledByLoket[loketKey] = null;
   saveState(state);
-  
+
   return true;
 };
 
 export const markServed = (loket: number): boolean => {
   const state = getInitialState();
   const loketKey = loket as 1 | 2 | 3 | 4;
-  
+
   if (loketKey < 1 || loketKey > 4) return false;
-  
+
   const current = state.calledByLoket[loketKey];
   if (!current) return false;
-  
+
   const ticket = state.tickets.find(t => t.id === current.id);
   if (ticket) {
     ticket.status = 'served';
   }
-  
+
   state.calledByLoket[loketKey] = null;
   saveState(state);
-  
+
   return true;
 };
 
@@ -287,7 +288,7 @@ export const subscribeToChanges = (callback: (state: QueueState) => void) => {
       }
     }
   };
-  
+
   window.addEventListener('storage', handler);
   return () => window.removeEventListener('storage', handler);
 };
