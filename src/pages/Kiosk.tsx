@@ -5,7 +5,9 @@ import {
   takeNumber,
   getWaitingCount,
   subscribeToChanges,
+  getInitialState,
   ServiceType,
+  QueueMode,
 } from "@/lib/queueStore";
 import { printTicketDirectly } from "@/lib/printTicket";
 import { UserPlus, MessageCircleQuestion, Users } from "lucide-react";
@@ -16,6 +18,7 @@ const Kiosk = () => {
   const [waitingCountA, setWaitingCountA] = useState(0);
   const [waitingCountB, setWaitingCountB] = useState(0);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [mode, setMode] = useState<QueueMode>("SIMPLIFIED");
 
   const lastPress = useRef(0);
 
@@ -35,9 +38,9 @@ const Kiosk = () => {
     (e: KeyboardEvent) => {
       if (!throttle(300)) return;
       if (e.key === "Enter") handleTakeNumber("A");
-      if (e.key === ".") handleTakeNumber("B");
+      if (e.key === "." && mode === "NORMAL") handleTakeNumber("B");
     },
-    [handleTakeNumber]
+    [handleTakeNumber, mode]
   );
 
   useEffect(() => {
@@ -46,8 +49,10 @@ const Kiosk = () => {
   }, [handleKeyboard]);
 
   useEffect(() => {
+    const state = getInitialState();
     setWaitingCountA(getWaitingCount("A"));
     setWaitingCountB(getWaitingCount("B"));
+    setMode(state.config.mode);
 
     const unsubscribe = subscribeToChanges((state) => {
       setWaitingCountA(
@@ -60,6 +65,7 @@ const Kiosk = () => {
           (t) => t.status === "waiting" && t.serviceType === "B"
         ).length
       );
+      setMode(state.config.mode);
     });
 
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -114,9 +120,9 @@ const Kiosk = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+          <div className={mode === "NORMAL" ? "grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8" : "flex justify-center"}>
             {/* ##### SERVICE A ##### */}
-            <div className="group relative">
+            <div className={`group relative w-full ${mode === "SIMPLIFIED" ? "max-w-2xl" : ""}`}>
               <div className="absolute -inset-0.5 bg-gradient-to-br from-gold/50 to-yellow-600/50 rounded-3xl blur opacity-20 group-hover:opacity-50 transition duration-500"></div>
               <Button
                 onClick={() => handleTakeNumber("A")}
@@ -129,7 +135,7 @@ const Kiosk = () => {
                   Pendaftaran<br />Kunjungan
                 </span>
                 <span className="text-xs sm:text-sm md:text-base text-gold font-medium px-4 py-1.5 bg-gold/10 rounded-full border border-gold/20 uppercase tracking-widest">
-                  Loket 1, 2, 3
+                  {mode === "NORMAL" ? "Loket 1, 2, 3" : "Loket 1, 2, 3, 4"}
                 </span>
 
                 <div className="absolute top-6 left-6 flex items-center gap-2 bg-[#0a1120]/80 border border-gold/20 px-4 py-2 rounded-2xl shadow-lg backdrop-blur-md">
@@ -143,31 +149,33 @@ const Kiosk = () => {
             </div>
 
             {/* ##### SERVICE B ##### */}
-            <div className="group relative">
-              <div className="absolute -inset-0.5 bg-gradient-to-br from-emerald-500/50 to-emerald-700/50 rounded-3xl blur opacity-20 group-hover:opacity-50 transition duration-500"></div>
-              <Button
-                onClick={() => handleTakeNumber("B")}
-                className="relative w-full h-[60vh] md:h-[50vh] max-h-[400px] bg-[#1e293b]/60 hover:bg-[#1e293b]/80 border border-emerald-500/30 hover:border-emerald-500/60 backdrop-blur-sm rounded-3xl flex flex-col items-center justify-center p-6 transition-all duration-300 hover:shadow-[0_0_40px_rgba(16,185,129,0.2)] hover:-translate-y-2"
-              >
-                <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 border border-emerald-500/30 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500 shadow-inner">
-                  <MessageCircleQuestion className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 text-emerald-400 drop-shadow-md" />
-                </div>
-                <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-white text-center leading-tight mb-4 tracking-wide">
-                  Informasi &<br />Pengaduan
-                </span>
-                <span className="text-xs sm:text-sm md:text-base text-emerald-400 font-medium px-4 py-1.5 bg-emerald-500/10 rounded-full border border-emerald-500/20 uppercase tracking-widest">
-                  Loket 4
-                </span>
-
-                <div className="absolute top-6 left-6 flex items-center gap-2 bg-[#0a1120]/80 border border-emerald-500/20 px-4 py-2 rounded-2xl shadow-lg backdrop-blur-md">
-                  <Users className="w-5 h-5 text-emerald-400" />
-                  <span className="text-sm font-semibold text-white">
-                    <strong className="text-emerald-400 text-lg mr-1">{waitingCountB}</strong>
-                    <span className="opacity-70 font-normal uppercase text-xs tracking-wider">Menunggu</span>
+            {mode === "NORMAL" && (
+              <div className="group relative">
+                <div className="absolute -inset-0.5 bg-gradient-to-br from-emerald-500/50 to-emerald-700/50 rounded-3xl blur opacity-20 group-hover:opacity-50 transition duration-500"></div>
+                <Button
+                  onClick={() => handleTakeNumber("B")}
+                  className="relative w-full h-[60vh] md:h-[50vh] max-h-[400px] bg-[#1e293b]/60 hover:bg-[#1e293b]/80 border border-emerald-500/30 hover:border-emerald-500/60 backdrop-blur-sm rounded-3xl flex flex-col items-center justify-center p-6 transition-all duration-300 hover:shadow-[0_0_40px_rgba(16,185,129,0.2)] hover:-translate-y-2"
+                >
+                  <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 border border-emerald-500/30 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500 shadow-inner">
+                    <MessageCircleQuestion className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 text-emerald-400 drop-shadow-md" />
+                  </div>
+                  <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-white text-center leading-tight mb-4 tracking-wide">
+                    Informasi &<br />Pengaduan
                   </span>
-                </div>
-              </Button>
-            </div>
+                  <span className="text-xs sm:text-sm md:text-base text-emerald-400 font-medium px-4 py-1.5 bg-emerald-500/10 rounded-full border border-emerald-500/20 uppercase tracking-widest">
+                    Loket 4
+                  </span>
+
+                  <div className="absolute top-6 left-6 flex items-center gap-2 bg-[#0a1120]/80 border border-emerald-500/20 px-4 py-2 rounded-2xl shadow-lg backdrop-blur-md">
+                    <Users className="w-5 h-5 text-emerald-400" />
+                    <span className="text-sm font-semibold text-white">
+                      <strong className="text-emerald-400 text-lg mr-1">{waitingCountB}</strong>
+                      <span className="opacity-70 font-normal uppercase text-xs tracking-wider">Menunggu</span>
+                    </span>
+                  </div>
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </main>

@@ -10,7 +10,9 @@ import {
   markServed,
   getCalledByLoket,
   resetQueue,
-  takeNumber
+  takeNumber,
+  setQueueMode,
+  QueueMode
 } from "@/lib/queueStore";
 import { printTicketDirectly } from "@/lib/printTicket";
 import { announceQueue, announceQueueEmpty } from "@/lib/tts";
@@ -34,6 +36,7 @@ const Display = () => {
   const [waitingB, setWaitingB] = useState<QueueTicket[]>([]);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showResetDialog, setShowResetDialog] = useState(false);
+  const [mode, setMode] = useState<QueueMode>("SIMPLIFIED");
 
   const lastPressRef = useRef(0);
   const lastCallPressRef = useRef(0);
@@ -56,20 +59,13 @@ const Display = () => {
       return true;
     };
 
-    const throttleCall = (delay: number) => {
-      const now = Date.now();
-      if (now - lastCallPressRef.current < delay) return false;
-      lastCallPressRef.current = now;
-      return true;
-    };
-
     if (key === "Enter" && throttle(1000)) {
       const ticket = takeNumber("A");
       printTicketDirectly(ticket);
       return;
     }
 
-    if ((key === "." || key === "Delete") && throttle(1000)) {
+    if (key === "." && throttle(1000) && mode === "NORMAL") {
       const ticket = takeNumber("B");
       printTicketDirectly(ticket);
       return;
@@ -81,10 +77,18 @@ const Display = () => {
       return;
     }
 
-    if (["1", "2", "3"].includes(key)) {
+    if (key === "*") {
+      const state = getInitialState();
+      const newMode = state.config.mode === 'NORMAL' ? 'SIMPLIFIED' : 'NORMAL';
+      setQueueMode(newMode);
+      setMode(newMode);
+      return;
+    }
+
+    if (["1", "2", "3", "4"].includes(key)) {
       if (isAnnouncingRef.current) return;
 
-      const loket = parseInt(key) as 1 | 2 | 3;
+      const loket = parseInt(key) as 1 | 2 | 3 | 4;
       const current = getCalledByLoket(loket);
       if (current) markServed(loket);
       const ticket = callNext(loket);
@@ -102,30 +106,16 @@ const Display = () => {
       }
     }
 
-    if (key === "4") {
+    if (["7", "8", "9", "6"].includes(key)) {
       if (isAnnouncingRef.current) return;
 
-      const current = getCalledByLoket(4);
-      if (current) markServed(4);
-      const ticket = callNext(4);
-
-      isAnnouncingRef.current = true;
-      try {
-        if (ticket) {
-          lastTicketRef.current[4] = ticket.formattedNumber;
-          await announceQueue(ticket.formattedNumber, 4);
-        } else {
-          await announceQueueEmpty();
-        }
-      } finally {
-        isAnnouncingRef.current = false;
+      let loket: 1 | 2 | 3 | 4;
+      if (key === "6") {
+        loket = 4;
+      } else {
+        loket = (parseInt(key) - 6) as 1 | 2 | 3;
       }
-    }
 
-    if (["7", "8", "9"].includes(key)) {
-      if (isAnnouncingRef.current) return;
-
-      const loket = (parseInt(key) - 6) as 1 | 2 | 3;
       const ticket = recallCurrent(loket);
       if (ticket) {
         isAnnouncingRef.current = true;
@@ -136,25 +126,12 @@ const Display = () => {
         }
       }
     }
-
-    if (key === "6") {
-      if (isAnnouncingRef.current) return;
-
-      const ticket = recallCurrent(4);
-      if (ticket) {
-        isAnnouncingRef.current = true;
-        try {
-          await announceQueue(ticket.formattedNumber, 4);
-        } finally {
-          isAnnouncingRef.current = false;
-        }
-      }
-    }
-  }, []);
+  }, [mode]);
 
   useEffect(() => {
     const state = getInitialState();
     setCalledByLoket(state.calledByLoket);
+    setMode(state.config.mode);
 
     Object.keys(state.calledByLoket).forEach((key) => {
       const k = parseInt(key);
@@ -163,6 +140,7 @@ const Display = () => {
 
     const unsubscribe = subscribeToChanges((state) => {
       setCalledByLoket(state.calledByLoket);
+      setMode(state.config.mode);
       Object.keys(state.calledByLoket).forEach((key) => {
         const k = parseInt(key);
         if (state.calledByLoket[k]) lastTicketRef.current[k] = state.calledByLoket[k]!.formattedNumber;
@@ -183,7 +161,7 @@ const Display = () => {
   const LoketCard = ({ loket, ticket }: { loket: number; ticket: QueueTicket | null }) => {
     const hasData = lastTicketRef.current[loket] !== "---";
     const isActive = !!ticket;
-    const isInfoLoket = loket === 4;
+    const isInfoLoket = mode === "NORMAL" && loket === 4;
 
     const baseBorderColor = isInfoLoket ? 'border-emerald-500' : 'border-gold';
     const textTheme = isInfoLoket ? "text-emerald-400" : "text-gold";
@@ -300,8 +278,8 @@ const Display = () => {
             <video src="/VIDEO PROFILE RUTAN DEPOK 2025.mp4" autoPlay loop muted playsInline className="w-full h-full object-cover rounded-2xl" />
           </div>
 
-          <div className="grid grid-cols-2 gap-6 h-40 shrink-0">
-            <div className="bg-[#1e293b]/60 rounded-2xl border-2 border-gold flex flex-col justify-center items-center px-6">
+          <div className={mode === "NORMAL" ? "grid grid-cols-2 gap-6 h-40 shrink-0" : "flex gap-6 h-40 shrink-0"}>
+            <div className={`bg-[#1e293b]/60 rounded-2xl border-2 border-gold flex flex-col justify-center items-center px-6 ${mode === "SIMPLIFIED" ? "flex-1" : ""}`}>
               <h4 className="text-gold text-xl font-semibold uppercase mb-2">PENDAFTARAN KUNJUNGAN</h4>
               <div className="flex items-center gap-6">
                 <Users className="w-12 h-12 text-gold opacity-100" strokeWidth={2.5} />
@@ -312,21 +290,23 @@ const Display = () => {
               </div>
             </div>
 
-            <div className="bg-[#1e293b]/60 rounded-2xl border-2 border-emerald-500 flex flex-col justify-center items-center px-6">
-              <h4 className="text-emerald-400 text-xl font-semibold uppercase mb-2">INFORMASI DAN PENGADUAN</h4>
-              <div className="flex items-center gap-6">
-                <Users className="w-12 h-12 text-emerald-500 opacity-100" strokeWidth={2.5} />
-                <div className="flex items-baseline gap-3">
-                  <span className="text-6xl font-bold tracking-tighter text-white">{waitingB.length}</span>
-                  <span className="text-sm font-medium opacity-40 uppercase">MENUNGGU</span>
+            {mode === "NORMAL" && (
+              <div className="bg-[#1e293b]/60 rounded-2xl border-2 border-emerald-500 flex flex-col justify-center items-center px-6">
+                <h4 className="text-emerald-400 text-xl font-semibold uppercase mb-2">INFORMASI DAN PENGADUAN</h4>
+                <div className="flex items-center gap-6">
+                  <Users className="w-12 h-12 text-emerald-500 opacity-100" strokeWidth={2.5} />
+                  <div className="flex items-baseline gap-3">
+                    <span className="text-6xl font-bold tracking-tighter text-white">{waitingB.length}</span>
+                    <span className="text-sm font-medium opacity-40 uppercase">MENUNGGU</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 
         <div className="w-[580px] flex flex-col h-full">
-          <div className="grid grid-rows-[64px_1fr_1fr_1fr_64px_1fr] h-full gap-3">
+          <div className={`grid h-full gap-3 ${mode === "NORMAL" ? "grid-rows-[64px_1fr_1fr_1fr_64px_1fr]" : "grid-rows-[64px_1fr_1fr_1fr_1fr]"}`}>
             <div className="bg-gold/10 border border-gold/40 rounded-2xl flex items-center justify-center">
               <span className="text-gold text-2xl font-semibold uppercase tracking-tight text-center">LAYANAN PENDAFTARAN KUNJUNGAN</span>
             </div>
@@ -335,17 +315,22 @@ const Display = () => {
             <LoketCard loket={2} ticket={calledByLoket[2]} />
             <LoketCard loket={3} ticket={calledByLoket[3]} />
 
-            <div className="bg-emerald-500/10 border border-emerald-500/40 rounded-2xl flex items-center justify-center mt-1">
-              <span className="text-emerald-400 text-2xl font-semibold uppercase tracking-tight text-center">LAYANAN INFORMASI DAN PENGADUAN</span>
-            </div>
-
-            <LoketCard loket={4} ticket={calledByLoket[4]} />
+            {mode === "NORMAL" ? (
+              <>
+                <div className="bg-emerald-500/10 border border-emerald-500/40 rounded-2xl flex items-center justify-center mt-1">
+                  <span className="text-emerald-400 text-2xl font-semibold uppercase tracking-tight text-center">LAYANAN INFORMASI DAN PENGADUAN</span>
+                </div>
+                <LoketCard loket={4} ticket={calledByLoket[4]} />
+              </>
+            ) : (
+              <LoketCard loket={4} ticket={calledByLoket[4]} />
+            )}
           </div>
         </div>
       </main>
 
       <footer className="bg-gold h-12 flex items-center overflow-hidden shrink-0 relative">
-        <div className="animate-marquee-full">
+        <div className="animate-marquee-full">+
           <span className="text-[#0f172a] font-bold text-xl uppercase tracking-widest py-1">
             ✯✧☆ SELAMAT MENUNAIKAN IBADAH PUASA ✯✧☆ SELAMA BULAN RAMADHAN LAYANAN KUNJUNGAN TETAP BERJALAN SESUAI JADWAL ✯✧☆ MOHON TETAP MENJAGA KETERTIBAN DAN KEKHUSYUKAN SELAMA BERADA DI AREA RUTAN ✯✧☆ RAMADHAN BERKAH ✯✧☆
           </span>

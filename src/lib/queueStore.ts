@@ -2,6 +2,7 @@
 // Supports two service types: A (Pendaftaran) and B (Informasi)
 
 export type ServiceType = 'A' | 'B';
+export type QueueMode = 'NORMAL' | 'SIMPLIFIED';
 
 export interface QueueTicket {
   id: string;
@@ -27,6 +28,9 @@ export interface QueueState {
   currentNumberB: number; // Counter for B tickets
   lastReset: string;
   calledByLoket: CalledByLoket;
+  config: {
+    mode: QueueMode;
+  };
 }
 
 const STORAGE_KEY = 'queue_state';
@@ -75,6 +79,7 @@ export const getInitialState = (): QueueState => {
           currentNumberB: 0,
           lastReset: today,
           calledByLoket: getEmptyCalledByLoket(),
+          config: parsed.config || { mode: 'SIMPLIFIED' },
         };
       }
 
@@ -90,6 +95,7 @@ export const getInitialState = (): QueueState => {
           currentNumberB: 0,
           lastReset: parsed.lastReset,
           calledByLoket: parseCalledByLoket(parsed.calledByLoket),
+          config: parsed.config || { mode: 'SIMPLIFIED' },
         };
       }
 
@@ -97,6 +103,7 @@ export const getInitialState = (): QueueState => {
         ...parsed,
         tickets: parsed.tickets.map(parseTicket),
         calledByLoket: parseCalledByLoket(parsed.calledByLoket),
+        config: parsed.config || { mode: 'SIMPLIFIED' },
       };
     } catch {
       // Invalid stored data
@@ -109,6 +116,7 @@ export const getInitialState = (): QueueState => {
     currentNumberB: 0,
     lastReset: today,
     calledByLoket: getEmptyCalledByLoket(),
+    config: { mode: 'SIMPLIFIED' },
   };
 };
 
@@ -151,7 +159,11 @@ export const takeNumber = (serviceType: ServiceType): QueueTicket => {
 // Get allowed service types for a loket
 const getAllowedServiceType = (loket: number): ServiceType | null => {
   if (loket >= 1 && loket <= 3) return 'A';
-  if (loket === 4) return 'B';
+
+  const state = getInitialState();
+  if (loket === 4) {
+    return state.config.mode === 'NORMAL' ? 'B' : 'A';
+  }
   return null;
 };
 
@@ -256,14 +268,22 @@ export const getCalledByLoket = (loket: number): QueueTicket | null => {
   return state.calledByLoket[loketKey];
 };
 
+export const setQueueMode = (mode: QueueMode): void => {
+  const state = getInitialState();
+  state.config.mode = mode;
+  saveState(state);
+};
+
 export const resetQueue = (): void => {
   const today = getTodayString();
+  const state = getInitialState();
   const newState: QueueState = {
     tickets: [],
     currentNumberA: 0,
     currentNumberB: 0,
     lastReset: today,
     calledByLoket: getEmptyCalledByLoket(),
+    config: state.config,
   };
   saveState(newState);
 };
