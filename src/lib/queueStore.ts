@@ -16,10 +16,7 @@ export interface QueueTicket {
 }
 
 export interface CalledByLoket {
-  1: QueueTicket | null;
-  2: QueueTicket | null;
-  3: QueueTicket | null;
-  4: QueueTicket | null;
+  [key: number]: QueueTicket | null;
 }
 
 export interface QueueState {
@@ -30,6 +27,7 @@ export interface QueueState {
   calledByLoket: CalledByLoket;
   config: {
     mode: QueueMode;
+    runningText: string;
   };
 }
 
@@ -50,19 +48,24 @@ const parseTicket = (t: any): QueueTicket => ({
   calledAt: t.calledAt ? new Date(t.calledAt) : undefined,
 });
 
-const parseCalledByLoket = (data: any): CalledByLoket => ({
-  1: data?.[1] ? parseTicket(data[1]) : null,
-  2: data?.[2] ? parseTicket(data[2]) : null,
-  3: data?.[3] ? parseTicket(data[3]) : null,
-  4: data?.[4] ? parseTicket(data[4]) : null,
-});
+const parseCalledByLoket = (data: any): CalledByLoket => {
+  const result: CalledByLoket = {};
+  if (data) {
+    Object.keys(data).forEach(key => {
+      const numKey = parseInt(key);
+      result[numKey] = data[key] ? parseTicket(data[key]) : null;
+    });
+  }
+  return result;
+};
 
-const getEmptyCalledByLoket = (): CalledByLoket => ({
-  1: null,
-  2: null,
-  3: null,
-  4: null,
-});
+const getEmptyCalledByLoket = (): CalledByLoket => {
+  const result: CalledByLoket = {};
+  for (let i = 1; i <= 10; i++) {
+    result[i] = null;
+  }
+  return result;
+};
 
 export const getInitialState = (): QueueState => {
   const today = getTodayString();
@@ -79,7 +82,7 @@ export const getInitialState = (): QueueState => {
           currentNumberB: 0,
           lastReset: today,
           calledByLoket: getEmptyCalledByLoket(),
-          config: parsed.config || { mode: 'NORMAL' },
+          config: parsed.config || { mode: 'NORMAL', runningText: '✯✧☆ SELAMAT DATANG DI RUMAH TAHANAN NEGARA KELAS I DEPOK ✯✧☆ KAMI BERKOMITMEN MEMBERIKAN PELAYANAN YANG CEPAT, TRANSPARAN, DAN PROFESIONAL ✯✧☆ MOHON ANTRI DENGAN TERTIB DEMI KENYAMANAN BERSAMA ✯✧☆ HUBUNGI PETUGAS JIKA MEMBUTUHKAN BANTUAN ✯✧☆' },
         };
       }
 
@@ -95,15 +98,18 @@ export const getInitialState = (): QueueState => {
           currentNumberB: 0,
           lastReset: parsed.lastReset,
           calledByLoket: parseCalledByLoket(parsed.calledByLoket),
-          config: parsed.config || { mode: 'NORMAL' },
+          config: parsed.config || { mode: 'NORMAL', runningText: '✯✧☆ SELAMAT DATANG DI RUMAH TAHANAN NEGARA KELAS I DEPOK ✯✧☆ KAMI BERKOMITMEN MEMBERIKAN PELAYANAN YANG CEPAT, TRANSPARAN, DAN PROFESIONAL ✯✧☆ MOHON ANTRI DENGAN TERTIB DEMI KENYAMANAN BERSAMA ✯✧☆ HUBUNGI PETUGAS JIKA MEMBUTUHKAN BANTUAN ✯✧☆' },
         };
       }
 
       return {
         ...parsed,
-        tickets: parsed.tickets.map(parseTicket),
+        tokens: parsed.tickets.map(parseTicket),
         calledByLoket: parseCalledByLoket(parsed.calledByLoket),
-        config: parsed.config || { mode: 'NORMAL' },
+        config: {
+          mode: parsed.config?.mode || 'NORMAL',
+          runningText: parsed.config?.runningText || '✯✧☆ SELAMAT DATANG DI RUMAH TAHANAN NEGARA KELAS I DEPOK ✯✧☆ KAMI BERKOMITMEN MEMBERIKAN PELAYANAN YANG CEPAT, TRANSPARAN, DAN PROFESIONAL ✯✧☆ MOHON ANTRI DENGAN TERTIB DEMI KENYAMANAN BERSAMA ✯✧☆ HUBUNGI PETUGAS JIKA MEMBUTUHKAN BANTUAN ✯✧☆'
+        },
       };
     } catch {
       // Invalid stored data
@@ -116,7 +122,10 @@ export const getInitialState = (): QueueState => {
     currentNumberB: 0,
     lastReset: today,
     calledByLoket: getEmptyCalledByLoket(),
-    config: { mode: 'NORMAL' },
+    config: {
+      mode: 'NORMAL',
+      runningText: '✯✧☆ SELAMAT DATANG DI RUMAH TAHANAN NEGARA KELAS I DEPOK ✯✧☆ KAMI BERKOMITMEN MEMBERIKAN PELAYANAN YANG CEPAT, TRANSPARAN, DAN PROFESIONAL ✯✧☆ MOHON ANTRI DENGAN TERTIB DEMI KENYAMANAN BERSAMA ✯✧☆ HUBUNGI PETUGAS JIKA MEMBUTUHKAN BANTUAN ✯✧☆'
+    },
   };
 };
 
@@ -158,18 +167,20 @@ export const takeNumber = (serviceType: ServiceType): QueueTicket => {
 
 // Get allowed service types for a loket
 const getAllowedServiceType = (loket: number): ServiceType | null => {
-  if (loket >= 1 && loket <= 3) return 'A';
+  if (loket < 1 || loket > 10) return null;
 
   const state = getInitialState();
-  if (loket === 4) {
-    return state.config.mode === 'NORMAL' ? 'B' : 'A';
+  if (loket === 4 && state.config.mode === 'NORMAL') {
+    return 'B';
   }
-  return null;
+
+  // All other lokets (1-3, 5-10) or loket 4 (in SIMPLIFIED) are Service A
+  return 'A';
 };
 
-export const callNext = (loket: number): QueueTicket | null => {
+export const callNext = (loket: number, forcedType?: ServiceType): QueueTicket | null => {
   const state = getInitialState();
-  const allowedType = getAllowedServiceType(loket);
+  const allowedType = forcedType || getAllowedServiceType(loket);
 
   if (!allowedType) return null;
 
@@ -185,8 +196,7 @@ export const callNext = (loket: number): QueueTicket | null => {
   next.loket = loket;
   next.calledAt = new Date();
 
-  const loketKey = loket as 1 | 2 | 3 | 4;
-  state.calledByLoket[loketKey] = next;
+  state.calledByLoket[loket] = next;
 
   saveState(state);
   return next;
@@ -194,15 +204,13 @@ export const callNext = (loket: number): QueueTicket | null => {
 
 export const recallCurrent = (loket: number): QueueTicket | null => {
   const state = getInitialState();
-  const loketKey = loket as 1 | 2 | 3 | 4;
+  if (loket < 1 || loket > 10) return null;
 
-  if (loketKey < 1 || loketKey > 4) return null;
-
-  const current = state.calledByLoket[loketKey];
+  const current = state.calledByLoket[loket];
   if (!current) return null;
 
   current.calledAt = new Date();
-  state.calledByLoket[loketKey] = current;
+  state.calledByLoket[loket] = current;
   saveState(state);
 
   return current;
@@ -210,11 +218,9 @@ export const recallCurrent = (loket: number): QueueTicket | null => {
 
 export const skipCurrent = (loket: number): boolean => {
   const state = getInitialState();
-  const loketKey = loket as 1 | 2 | 3 | 4;
+  if (loket < 1 || loket > 10) return false;
 
-  if (loketKey < 1 || loketKey > 4) return false;
-
-  const current = state.calledByLoket[loketKey];
+  const current = state.calledByLoket[loket];
   if (!current) return false;
 
   const ticket = state.tickets.find(t => t.id === current.id);
@@ -222,7 +228,7 @@ export const skipCurrent = (loket: number): boolean => {
     ticket.status = 'skipped';
   }
 
-  state.calledByLoket[loketKey] = null;
+  state.calledByLoket[loket] = null;
   saveState(state);
 
   return true;
@@ -230,11 +236,9 @@ export const skipCurrent = (loket: number): boolean => {
 
 export const markServed = (loket: number): boolean => {
   const state = getInitialState();
-  const loketKey = loket as 1 | 2 | 3 | 4;
+  if (loket < 1 || loket > 10) return false;
 
-  if (loketKey < 1 || loketKey > 4) return false;
-
-  const current = state.calledByLoket[loketKey];
+  const current = state.calledByLoket[loket];
   if (!current) return false;
 
   const ticket = state.tickets.find(t => t.id === current.id);
@@ -242,7 +246,7 @@ export const markServed = (loket: number): boolean => {
     ticket.status = 'served';
   }
 
-  state.calledByLoket[loketKey] = null;
+  state.calledByLoket[loket] = null;
   saveState(state);
 
   return true;
@@ -263,14 +267,19 @@ export const getWaitingTickets = (serviceType: ServiceType): QueueTicket[] => {
 
 export const getCalledByLoket = (loket: number): QueueTicket | null => {
   const state = getInitialState();
-  const loketKey = loket as 1 | 2 | 3 | 4;
-  if (loketKey < 1 || loketKey > 4) return null;
-  return state.calledByLoket[loketKey];
+  if (loket < 1 || loket > 10) return null;
+  return state.calledByLoket[loket];
 };
 
 export const setQueueMode = (mode: QueueMode): void => {
   const state = getInitialState();
   state.config.mode = mode;
+  saveState(state);
+};
+
+export const setRunningText = (text: string): void => {
+  const state = getInitialState();
+  state.config.runningText = text;
   saveState(state);
 };
 

@@ -2,9 +2,34 @@ import { Link } from "react-router-dom";
 import { InstitutionLogo } from "@/components/InstitutionLogo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Ticket, Monitor, ArrowRight, Keyboard, Printer, RefreshCw, Volume2 } from "lucide-react";
+import { Ticket, Monitor, ArrowRight, Keyboard, Printer, RefreshCw, Volume2, Settings, Edit2 } from "lucide-react";
+import { getInitialState, setRunningText, subscribeToChanges } from "@/lib/queueStore";
+import { useState, useEffect } from "react";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { MessageSquare, Save, Info } from "lucide-react";
 
 const Index = () => {
+  const [runningText, setUpdateRunningText] = useState("");
+  const [tempText, setTempText] = useState("");
+  const [showEditDialog, setShowEditDialog] = useState(false);
+
+  useEffect(() => {
+    const state = getInitialState();
+    setUpdateRunningText(state.config.runningText);
+    setTempText(state.config.runningText);
+
+    const unsubscribe = subscribeToChanges((state) => {
+      setUpdateRunningText(state.config.runningText);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleSaveText = () => {
+    setRunningText(tempText);
+    setShowEditDialog(false);
+  };
+
   return (
     <div className="min-h-screen bg-[#0a1120] text-primary-foreground font-sans selection:bg-gold/30">
       {/* Background gradients */}
@@ -39,7 +64,7 @@ const Index = () => {
         <main className="max-w-6xl mx-auto px-6 pb-20">
 
           {/* Main Navigation Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             {/* Kiosk Card */}
             <Link to="/kiosk" className="group block">
               <div className="h-full relative overflow-hidden rounded-3xl bg-gradient-to-b from-navy-light/40 to-navy-dark/60 border border-gold/20 hover:border-gold/50 transition-all duration-500 hover:shadow-[0_10px_40px_-10px_rgba(212,175,55,0.3)] hover:-translate-y-2">
@@ -87,6 +112,91 @@ const Index = () => {
                 </div>
               </div>
             </Link>
+
+            {/* Custom Display Card */}
+            <Link to="/custom-display" className="group block">
+              <div className="h-full relative overflow-hidden rounded-3xl bg-gradient-to-b from-navy-light/40 to-navy-dark/60 border border-emerald-500/20 hover:border-emerald-400/50 transition-all duration-500 hover:shadow-[0_10px_40px_-10px_rgba(16,185,129,0.3)] hover:-translate-y-2">
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="p-8 md:p-10 relative z-10 flex flex-col h-full">
+                  <div className="flex items-center justify-between mb-8">
+                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500">
+                      <Settings className="w-10 h-10 text-white" />
+                    </div>
+                    <div className="w-12 h-12 rounded-full border border-emerald-400/30 flex items-center justify-center group-hover:bg-emerald-400/10 transition-colors">
+                      <ArrowRight className="w-6 h-6 text-emerald-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                  <h3 className="text-3xl font-bold text-white mb-3">Antrian Khusus</h3>
+                  <p className="text-primary-foreground/70 text-lg mb-6 flex-1">
+                    Layar display fleksibel yang dapat dikonfigurasi jumlah loketnya secara mandiri (2 sampai 6 loket).
+                  </p>
+                  <div className="inline-flex items-center text-emerald-400 font-semibold text-lg group-hover:tracking-wide transition-all">
+                    Konfigurasi <ArrowRight className="w-5 h-5 ml-2" />
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </div>
+
+          {/* Running Text Editor Section */}
+          <div className="mb-16">
+            <Card className="bg-[#1e293b]/40 border-gold/20 backdrop-blur-md rounded-[2rem] overflow-hidden shadow-2xl">
+              <CardHeader className="border-b border-white/5 pb-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-gold/10 flex items-center justify-center text-gold">
+                      <MessageSquare size={24} />
+                    </div>
+                    <div>
+                      <CardTitle className="text-xl text-white">Konfigurasi Pesan Berjalan</CardTitle>
+                      <CardDescription className="text-white/40">Ubah pesan yang muncul di semua layar display secara real-time.</CardDescription>
+                    </div>
+                  </div>
+                  <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-blue-500/10 rounded-full border border-blue-500/20 text-blue-400 text-xs font-semibold">
+                    <Info size={14} /> Terhubung ke Semua Display
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-8 px-8 md:px-10 pb-8">
+                <div className="flex flex-col md:flex-row gap-6 items-start">
+                  <div className="flex-1 w-full space-y-4">
+                    <div className="relative group">
+                      <Textarea
+                        value={tempText}
+                        onChange={(e) => setTempText(e.target.value)}
+                        placeholder="Contoh: ✯✧☆ SELAMAT DATANG DI RUTAN DEPOK ✯✧☆"
+                        className="min-h-[100px] w-full bg-black/30 border-white/10 rounded-2xl p-6 text-lg font-medium text-white placeholder:text-white/10 focus:border-gold/50 focus:ring-gold/20 transition-all resize-none custom-scrollbar"
+                      />
+                      <div className="absolute right-4 bottom-4 text-[10px] text-white/20 font-mono tracking-tighter uppercase pointer-events-none">
+                        Live Preview Mode
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-white/30 italic px-2">
+                      <Info size={12} className="text-gold/50" />
+                      Tip: Gunakan simbol ✯ ✧ ☆ untuk pemisah pesan agar tampilan lebih elegan.
+                    </div>
+                  </div>
+                  <Button
+                    onClick={handleSaveText}
+                    className="w-full md:w-auto h-[100px] md:aspect-square bg-gold hover:bg-yellow-500 text-navy-dark rounded-2xl flex flex-col items-center justify-center gap-2 font-bold shadow-lg shadow-gold/10 transition-all hover:scale-[1.02] active:scale-95 group"
+                  >
+                    <Save size={28} className="group-hover:bounce" />
+                    <span className="text-xs uppercase tracking-widest">Update</span>
+                  </Button>
+                </div>
+              </CardContent>
+              {/* Mini Preview Bar */}
+              <div className="bg-black/40 border-t border-white/5 py-3 px-8 flex items-center gap-4">
+                <span className="text-[10px] font-bold text-gold/60 uppercase tracking-widest shrink-0">Current:</span>
+                <div className="flex-1 overflow-hidden">
+                  <div className="flex animate-marquee-full whitespace-nowrap">
+                    <span className="text-[11px] font-medium text-white/50 uppercase tracking-widest">
+                      {runningText}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </Card>
           </div>
 
           {/* Detailed Instructions Section */}
@@ -209,7 +319,7 @@ const Index = () => {
 
         </main>
 
-        {/* Footer */}
+        {/* Info Footer */}
         <footer className="border-t border-white/10 bg-[#070d19]/80 backdrop-blur-md py-8">
           <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3 opacity-50">

@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Kiosk from "./pages/Kiosk";
 import Display from "./pages/Display";
+import CustomDisplay from "./pages/CustomDisplay";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -20,6 +21,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/kiosk" element={<Kiosk />} />
           <Route path="/display" element={<Display />} />
+          <Route path="/custom-display" element={<CustomDisplay />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

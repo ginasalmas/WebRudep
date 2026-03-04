@@ -37,6 +37,7 @@ const Display = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showResetDialog, setShowResetDialog] = useState(false);
   const [mode, setMode] = useState<QueueMode>("SIMPLIFIED");
+  const [runningText, setRunningTextState] = useState("");
 
   const lastPressRef = useRef(0);
   const lastCallPressRef = useRef(0);
@@ -132,6 +133,7 @@ const Display = () => {
     const state = getInitialState();
     setCalledByLoket(state.calledByLoket);
     setMode(state.config.mode);
+    setRunningTextState(state.config.runningText);
 
     Object.keys(state.calledByLoket).forEach((key) => {
       const k = parseInt(key);
@@ -141,6 +143,7 @@ const Display = () => {
     const unsubscribe = subscribeToChanges((state) => {
       setCalledByLoket(state.calledByLoket);
       setMode(state.config.mode);
+      setRunningTextState(state.config.runningText);
       Object.keys(state.calledByLoket).forEach((key) => {
         const k = parseInt(key);
         if (state.calledByLoket[k]) lastTicketRef.current[k] = state.calledByLoket[k]!.formattedNumber;
@@ -330,9 +333,9 @@ const Display = () => {
       </main>
 
       <footer className="bg-gold h-12 flex items-center overflow-hidden shrink-0 relative">
-        <div className="animate-marquee-full">+
+        <div className="animate-marquee-full">
           <span className="text-[#0f172a] font-bold text-xl uppercase tracking-widest py-1">
-            ✯✧☆ SELAMAT MENUNAIKAN IBADAH PUASA ✯✧☆ SELAMA BULAN RAMADHAN LAYANAN KUNJUNGAN TETAP BERJALAN SESUAI JADWAL ✯✧☆ MOHON TETAP MENJAGA KETERTIBAN DAN KEKHUSYUKAN SELAMA BERADA DI AREA RUTAN ✯✧☆ RAMADHAN BERKAH ✯✧☆
+            {runningText}
           </span>
         </div>
       </footer>
