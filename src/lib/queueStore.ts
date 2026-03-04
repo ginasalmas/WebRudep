@@ -79,7 +79,7 @@ export const getInitialState = (): QueueState => {
           currentNumberB: 0,
           lastReset: today,
           calledByLoket: getEmptyCalledByLoket(),
-          config: parsed.config || { mode: 'SIMPLIFIED' },
+          config: parsed.config || { mode: 'NORMAL' },
         };
       }
 
@@ -95,7 +95,7 @@ export const getInitialState = (): QueueState => {
           currentNumberB: 0,
           lastReset: parsed.lastReset,
           calledByLoket: parseCalledByLoket(parsed.calledByLoket),
-          config: parsed.config || { mode: 'SIMPLIFIED' },
+          config: parsed.config || { mode: 'NORMAL' },
         };
       }
 
@@ -103,7 +103,7 @@ export const getInitialState = (): QueueState => {
         ...parsed,
         tickets: parsed.tickets.map(parseTicket),
         calledByLoket: parseCalledByLoket(parsed.calledByLoket),
-        config: parsed.config || { mode: 'SIMPLIFIED' },
+        config: parsed.config || { mode: 'NORMAL' },
       };
     } catch {
       // Invalid stored data
@@ -116,7 +116,7 @@ export const getInitialState = (): QueueState => {
     currentNumberB: 0,
     lastReset: today,
     calledByLoket: getEmptyCalledByLoket(),
-    config: { mode: 'SIMPLIFIED' },
+    config: { mode: 'NORMAL' },
   };
 };
 
