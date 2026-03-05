@@ -289,12 +289,12 @@ const Index = () => {
                         </h4>
                         <div className="space-y-4 text-xs">
                           <div className="flex justify-between items-center bg-white/5 p-3 rounded-2xl">
-                            <span>Panggil Tiket Baru</span>
-                            <kbd className="bg-gold text-navy-dark px-2 rounded-lg font-bold">1-6 / Q-P</kbd>
+                            <span>Panggil Tiket 1-9 & 10</span>
+                            <kbd className="bg-gold text-navy-dark px-2 rounded-lg font-bold">1-9 / + (Numpad)</kbd>
                           </div>
                           <div className="flex justify-between items-center bg-white/5 p-3 rounded-2xl">
                             <span>Panggil Ulang (Recall)</span>
-                            <kbd className="bg-blue-500 text-white px-2 rounded-lg font-bold">7-9 / Shift+Q-P</kbd>
+                            <kbd className="bg-blue-500 text-white px-2 rounded-lg font-bold">Shift + Key</kbd>
                           </div>
                         </div>
                       </div>
@@ -305,73 +305,53 @@ const Index = () => {
                         </h4>
                         <div className="space-y-4 text-xs">
                           <div className="flex justify-between items-center bg-emerald-500/10 p-3 rounded-2xl">
-                            <span>Panggil Tiket Baru</span>
-                            <kbd className="bg-emerald-400 text-emerald-950 px-2 rounded-lg font-bold text-sm">+</kbd>
+                            <span>Panggil Tiket Informasi</span>
+                            <kbd className="bg-emerald-400 text-emerald-950 px-2 rounded-lg font-bold text-sm">* (Numpad)</kbd>
                           </div>
                           <div className="flex justify-between items-center bg-emerald-500/10 p-3 rounded-2xl">
                             <span>Panggil Ulang (Recall)</span>
-                            <kbd className="bg-emerald-300 text-emerald-950 px-2 rounded-lg font-bold text-[9px]">ScrollLock</kbd>
+                            <kbd className="bg-emerald-300 text-emerald-950 px-2 rounded-lg font-bold text-[9px]">Shift + *</kbd>
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="bg-white/5 rounded-3xl p-6 border border-white/5">
-                        <h4 className="text-xs font-bold text-white/40 flex items-center gap-2 mb-4 uppercase tracking-wider">
-                          <Printer size={14} /> Cetak dari Display
-                        </h4>
-                        <div className="flex gap-4">
-                          <div className="flex-1 bg-black/20 p-3 rounded-2xl flex flex-col items-center">
-                            <span className="text-[10px] mb-2">Tiket Registrasi A</span>
-                            <kbd className="bg-white/10 px-3 py-1 rounded-lg">Enter</kbd>
-                          </div>
-                          <div className="flex-1 bg-black/20 p-3 rounded-2xl flex flex-col items-center">
-                            <span className="text-[10px] mb-2">Tiket Info B</span>
-                            <kbd className="bg-white/10 px-3 py-1 rounded-lg">Titik .</kbd>
-                          </div>
-                        </div>
+                    <div className="bg-red-500/5 rounded-3xl p-6 border border-red-500/10 flex items-center justify-between">
+                      <div>
+                        <p className="text-xs font-bold text-white">Reset Semua Antrian</p>
+                        <p className="text-[10px] text-red-100/40 uppercase tracking-wider">Gunakan tombol 0 pada keyboard</p>
                       </div>
-
-                      <div className="bg-red-500/5 rounded-3xl p-6 border border-red-500/10 flex items-center justify-between">
-                        <div>
-                          <p className="text-xs font-bold text-white">Reset Semua Antrian</p>
-                          <p className="text-[10px] text-red-100/40 uppercase">Hanya Awal Hari Kerja</p>
-                        </div>
-                        <kbd className="bg-red-600 text-white w-10 h-10 flex items-center justify-center rounded-xl font-bold border-2 border-red-500/50 text-xl shadow-lg shadow-red-900/40">0</kbd>
-                      </div>
+                      <kbd className="bg-red-600 text-white w-10 h-10 flex items-center justify-center rounded-xl font-bold border-2 border-red-500/50 text-xl shadow-lg shadow-red-900/40">0</kbd>
                     </div>
                   </div>
                 </div>
               </section>
 
-            </div>
-          </div>
-
-          {/* Features Section */}
-          <div>
-            <h2 className="text-2xl md:text-3xl font-bold mb-8 flex items-center gap-3">
-              <span className="w-8 h-1 bg-gold rounded-full"></span>
-              Fitur Unggulan
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-              {[
-                { icon: Printer, title: "Cetak Thermal", desc: "Dukungan cetak tiket otomatis via ESC/POS 58mm/80mm" },
-                { icon: Volume2, title: "Panggilan Suara", desc: "Pengumuman nomor otomatis dengan suara Bahasa Indonesia (TTS)" },
-                { icon: RefreshCw, title: "Sinkronisasi Realtime", desc: "Data terupdate seketika antara layar Kiosk dan Display via LocalStorage" },
-                { icon: Monitor, title: "Desain Responsif", desc: "Tampilan profesional disesuaikan untuk berbagai ukuran layar" }
-              ].map((feature, i) => (
-                <div key={i} className="bg-[#1e293b]/40 border border-white/5 rounded-2xl p-6 hover:bg-[#1e293b]/60 transition-colors">
-                  <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center mb-4 text-gold">
-                    <feature.icon className="w-6 h-6" />
-                  </div>
-                  <h4 className="text-white font-semibold mb-2">{feature.title}</h4>
-                  <p className="text-sm text-primary-foreground/60 leading-relaxed">{feature.desc}</p>
+              {/* 3. Features Section */}
+              <div className="mt-24">
+                <h2 className="text-2xl md:text-3xl font-bold mb-8 flex items-center gap-3">
+                  <span className="w-8 h-1 bg-gold rounded-full"></span>
+                  Fitur Unggulan
+                </h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                  {[
+                    { icon: Printer, title: "Cetak Thermal", desc: "Dukungan cetak tiket otomatis via ESC/POS 58mm/80mm" },
+                    { icon: Volume2, title: "Panggilan Suara", desc: "Pengumuman nomor otomatis dengan suara Bahasa Indonesia (TTS)" },
+                    { icon: RefreshCw, title: "Sinkronisasi Realtime", desc: "Data terupdate seketika antara layar Kiosk dan Display via LocalStorage" },
+                    { icon: Monitor, title: "Desain Responsif", desc: "Tampilan profesional disesuaikan untuk berbagai ukuran layar" }
+                  ].map((feature, i) => (
+                    <div key={i} className="bg-[#1e293b]/40 border border-white/5 rounded-2xl p-6 hover:bg-[#1e293b]/60 transition-colors">
+                      <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center mb-4 text-gold">
+                        <feature.icon className="w-6 h-6" />
+                      </div>
+                      <h4 className="text-white font-semibold mb-2">{feature.title}</h4>
+                      <p className="text-sm text-primary-foreground/60 leading-relaxed">{feature.desc}</p>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
           </div>
-
         </main>
 
         {/* Info Footer */}

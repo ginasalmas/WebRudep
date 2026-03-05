@@ -61,7 +61,7 @@ const parseCalledByLoket = (data: any): CalledByLoket => {
 
 const getEmptyCalledByLoket = (): CalledByLoket => {
   const result: CalledByLoket = {};
-  for (let i = 1; i <= 10; i++) {
+  for (let i = 1; i <= 11; i++) {
     result[i] = null;
   }
   return result;
@@ -167,7 +167,7 @@ export const takeNumber = (serviceType: ServiceType): QueueTicket => {
 
 // Get allowed service types for a loket
 const getAllowedServiceType = (loket: number): ServiceType | null => {
-  if (loket < 1 || loket > 10) return null;
+  if (loket < 1 || loket > 11) return null;
 
   const state = getInitialState();
   if (loket === 4 && state.config.mode === 'NORMAL') {
@@ -204,7 +204,7 @@ export const callNext = (loket: number, forcedType?: ServiceType): QueueTicket |
 
 export const recallCurrent = (loket: number): QueueTicket | null => {
   const state = getInitialState();
-  if (loket < 1 || loket > 10) return null;
+  if (loket < 1 || loket > 11) return null;
 
   const current = state.calledByLoket[loket];
   if (!current) return null;
@@ -218,7 +218,7 @@ export const recallCurrent = (loket: number): QueueTicket | null => {
 
 export const skipCurrent = (loket: number): boolean => {
   const state = getInitialState();
-  if (loket < 1 || loket > 10) return false;
+  if (loket < 1 || loket > 11) return false;
 
   const current = state.calledByLoket[loket];
   if (!current) return false;
@@ -236,7 +236,7 @@ export const skipCurrent = (loket: number): boolean => {
 
 export const markServed = (loket: number): boolean => {
   const state = getInitialState();
-  if (loket < 1 || loket > 10) return false;
+  if (loket < 1 || loket > 11) return false;
 
   const current = state.calledByLoket[loket];
   if (!current) return false;
@@ -267,7 +267,7 @@ export const getWaitingTickets = (serviceType: ServiceType): QueueTicket[] => {
 
 export const getCalledByLoket = (loket: number): QueueTicket | null => {
   const state = getInitialState();
-  if (loket < 1 || loket > 10) return null;
+  if (loket < 1 || loket > 11) return null;
   return state.calledByLoket[loket];
 };
 

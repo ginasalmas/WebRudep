@@ -67,7 +67,7 @@ const CustomDisplay = () => {
     const handleResetConfirm = () => {
         resetQueue();
         const newLastTickets: { [key: number]: string } = {};
-        for (let i = 1; i <= 10; i++) newLastTickets[i] = "---";
+        for (let i = 1; i <= 11; i++) newLastTickets[i] = "---";
         lastTicketRef.current = newLastTickets;
         setCalledByLoket({});
         setShowResetDialog(false);
@@ -77,7 +77,9 @@ const CustomDisplay = () => {
         if (!settings.isConfigured) return;
 
         const key = e.key;
-        if (key === "0") {
+        const code = e.code;
+
+        if (code === "Digit0" || code === "Numpad0") {
             setShowResetDialog(true);
             return;
         }
@@ -86,36 +88,42 @@ const CustomDisplay = () => {
 
         // --- CALLING SHORTCUTS ---
         const callMap: { [key: string]: number } = {
-            "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6,
-            "q": 1, "w": 2, "e": 3, "r": 4, "t": 5, "y": 6, "u": 7, "i": 8, "o": 9, "p": 10
+            "Numpad1": 1, "Numpad2": 2, "Numpad3": 3, "Numpad4": 4, "Numpad5": 5, "Numpad6": 6, "Numpad7": 7, "Numpad8": 8, "Numpad9": 9,
+            "Digit1": 1, "Digit2": 2, "Digit3": 3, "Digit4": 4, "Digit5": 5, "Digit6": 6, "Digit7": 7, "Digit8": 8, "Digit9": 9
         };
 
-        if (callMap[key] && callMap[key] <= settings.registrationCount) {
-            await processCall(callMap[key], 'A');
+        // Call (Direct press or Numpad)
+        if (callMap[code] && !e.shiftKey && callMap[code] <= settings.registrationCount) {
+            await processCall(callMap[code], 'A');
             return;
         }
 
-        // --- RECALL SHORTCUTS ---
-        const recallMap: { [key: string]: number } = {
-            "7": 1, "8": 2, "9": 3, "/": 4, "*": 5, "-": 6,
-            "Q": 1, "W": 2, "E": 3, "R": 4, "T": 5, "Y": 6, "U": 7, "I": 8, "O": 9, "P": 10
-        };
-
-        if (recallMap[key] && recallMap[key] <= settings.registrationCount) {
-            await processRecall(recallMap[key]);
+        // Loket 10 (+)
+        if ((code === "NumpadAdd" || key === "+") && !e.shiftKey && settings.registrationCount >= 10) {
+            await processCall(10, 'A');
             return;
         }
 
-        // --- INFORMATION SHORTCUTS ---
-        if ((key === "+" || key === "9") && settings.showInfoLoket) {
-            // Priority to + for info call
-            if (key === "+" || key === "9") await processCall(9, 'B');
+        // Information Call (*)
+        if ((code === "NumpadMultiply" || key === "*") && !e.shiftKey && settings.showInfoLoket) {
+            await processCall(11, 'B');
             return;
         }
 
-        if (key === "ScrollLock" && settings.showInfoLoket) {
-            await processRecall(9);
-            return;
+        // --- RECALL SHORTCUTS (Shift + Key/Code) ---
+        if (e.shiftKey) {
+            if (callMap[code] && callMap[code] <= settings.registrationCount) {
+                await processRecall(callMap[code]);
+                return;
+            }
+            if ((code === "NumpadAdd" || key === "+") && settings.registrationCount >= 10) {
+                await processRecall(10);
+                return;
+            }
+            if ((code === "NumpadMultiply" || key === "*") && settings.showInfoLoket) {
+                await processRecall(11);
+                return;
+            }
         }
 
         // --- PRINTING SHORTCUTS ---
@@ -176,7 +184,7 @@ const CustomDisplay = () => {
         setRunningTextState(state.config.runningText);
 
         const initialLastTickets: { [key: number]: string } = {};
-        for (let i = 1; i <= 10; i++) {
+        for (let i = 1; i <= 11; i++) {
             initialLastTickets[i] = state.calledByLoket[i]?.formattedNumber || "---";
         }
         lastTicketRef.current = initialLastTickets;
@@ -457,7 +465,7 @@ const CustomDisplay = () => {
                         {/* Service B Loket */}
                         {settings.showInfoLoket && (
                             <LoketCard
-                                loket={9}
+                                loket={11}
                                 title="LOKET INFORMASI"
                                 isInfo
                             />
