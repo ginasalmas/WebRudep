@@ -199,97 +199,152 @@ const Index = () => {
             </Card>
           </div>
 
-          {/* Detailed Instructions Section */}
-          <div className="mb-16">
-            <h2 className="text-2xl md:text-3xl font-bold mb-8 flex items-center gap-3">
-              <span className="w-8 h-1 bg-gold rounded-full"></span>
-              Panduan Penggunaan Sistem
+          {/* Comprehensive System Guide Section */}
+          <div className="mb-20">
+            <h2 className="text-3xl font-bold mb-10 flex items-center gap-4">
+              <span className="w-12 h-1.5 bg-gold rounded-full"></span>
+              Manual & Panduan Operasional Sistem
             </h2>
 
-            <div className="grid md:grid-cols-2 gap-8">
-              {/* Kiosk Instructions */}
-              <Card className="bg-[#1e293b]/50 border-white/10 backdrop-blur-sm">
-                <CardHeader className="border-b border-white/5 pb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-gold/10 rounded-lg text-gold"><Ticket className="w-5 h-5" /></div>
-                    <CardTitle className="text-xl text-white">Cara Penggunaan Kiosk</CardTitle>
+            <div className="grid grid-cols-1 gap-12">
+              {/* 1. Kiosk & Display Utama */}
+              <div className="grid md:grid-cols-2 gap-12">
+                {/* Kiosk Instructions */}
+                <Card className="bg-[#1e293b]/50 border-white/10 backdrop-blur-sm p-6 rounded-[2rem]">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="p-3 bg-gold/10 rounded-2xl text-gold"><Ticket size={24} /></div>
+                    <CardTitle className="text-2xl text-white">Unit Kiosk</CardTitle>
                   </div>
-                </CardHeader>
-                <CardContent className="pt-6 space-y-4 text-primary-foreground/80">
-                  <p className="leading-relaxed">Kiosk digunakan oleh pengunjung untuk mencetak nomor antrian. Layar ini disarankan menggunakan monitor layar sentuh <em>(touchscreen)</em>.</p>
-
-                  <div className="bg-black/30 rounded-xl p-4 mt-4 border border-white/5">
-                    <h4 className="font-semibold text-white mb-3 flex items-center gap-2"><Keyboard className="w-4 h-4 text-gold" /> Shortcut Keyboard Kiosk:</h4>
-                    <ul className="space-y-3 text-sm">
-                      <li className="flex items-start gap-3">
-                        <kbd className="px-2 py-1 bg-white/10 rounded border border-white/20 font-mono text-white text-xs shadow-sm">Enter</kbd>
-                        <span>Mencetak nomor antrian <strong>Layanan Pendaftaran Kunjungan</strong> (Antrian A).</span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <kbd className="px-2 py-1 bg-white/10 rounded border border-white/20 font-mono text-white text-xs shadow-sm">.</kbd>
-                        <span>Mencetak nomor antrian <strong>Layanan Informasi & Pengaduan</strong> (Antrian B).</span>
-                      </li>
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Display & Petugas Instructions */}
-              <Card className="bg-[#1e293b]/50 border-white/10 backdrop-blur-sm">
-                <CardHeader className="border-b border-white/5 pb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-blue-500/10 rounded-lg text-blue-400"><Monitor className="w-5 h-5" /></div>
-                    <CardTitle className="text-xl text-white">Cara Pemanggilan (Petugas)</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent className="pt-6 space-y-4 text-primary-foreground/80">
-                  <p className="leading-relaxed">Gunakan keyboard jenis <em>Numpad / Numeric Pad</em> yang terhubung ke PC Display untuk melakukan pemanggilan antrian oleh petugas loket.</p>
-
-                  <div className="bg-black/30 rounded-xl p-4 mt-4 border border-white/5">
-                    <h4 className="font-semibold text-white mb-3 flex items-center gap-2"><Keyboard className="w-4 h-4 text-blue-400" /> Shortcut Numpad Petugas:</h4>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                      <div className="space-y-3">
-                        <p className="font-medium text-gold/80 text-xs uppercase mb-1">Panggil Nomor Baru</p>
-                        <li className="flex items-center gap-2 text-white/90">
-                          <kbd className="min-w-[24px] text-center py-1 bg-white/10 rounded border border-white/20 font-mono text-xs">1</kbd> Panggil ke Loket 1
-                        </li>
-                        <li className="flex items-center gap-2 text-white/90">
-                          <kbd className="min-w-[24px] text-center py-1 bg-white/10 rounded border border-white/20 font-mono text-xs">2</kbd> Panggil ke Loket 2
-                        </li>
-                        <li className="flex items-center gap-2 text-white/90">
-                          <kbd className="min-w-[24px] text-center py-1 bg-white/10 rounded border border-white/20 font-mono text-xs">3</kbd> Panggil ke Loket 3
-                        </li>
-                        <li className="flex items-center gap-2 text-white/90">
-                          <kbd className="min-w-[24px] text-center py-1 bg-white/10 rounded border border-white/20 font-mono text-xs">4</kbd> Panggil ke Loket 4
-                        </li>
+                  <div className="space-y-6">
+                    <p className="text-sm text-primary-foreground/60 leading-relaxed">Digunakan pengunjung untuk mencetak nomor antrian mandiri.</p>
+                    <div className="bg-black/30 rounded-2xl p-5 border border-white/5 space-y-4">
+                      <div className="flex justify-between items-center group">
+                        <span className="text-xs text-white/80">Cetak Pendaftaran (A)</span>
+                        <kbd className="px-3 py-1 bg-white/10 rounded-lg border border-white/20 font-mono text-white text-xs">Enter</kbd>
                       </div>
-                      <div className="space-y-3">
-                        <p className="font-medium text-blue-400/80 text-xs uppercase mb-1">Panggil Ulang (Recall)</p>
-                        <li className="flex items-center gap-2 text-white/90">
-                          <kbd className="min-w-[24px] text-center py-1 bg-white/10 rounded border border-white/20 font-mono text-xs">7</kbd> Recall Loket 1
-                        </li>
-                        <li className="flex items-center gap-2 text-white/90">
-                          <kbd className="min-w-[24px] text-center py-1 bg-white/10 rounded border border-white/20 font-mono text-xs">8</kbd> Recall Loket 2
-                        </li>
-                        <li className="flex items-center gap-2 text-white/90">
-                          <kbd className="min-w-[24px] text-center py-1 bg-white/10 rounded border border-white/20 font-mono text-xs">9</kbd> Recall Loket 3
-                        </li>
-                        <li className="flex items-center gap-2 text-white/90">
-                          <kbd className="min-w-[24px] text-center py-1 bg-white/10 rounded border border-white/20 font-mono text-xs">6</kbd> Recall Loket 4
-                        </li>
+                      <div className="flex justify-between items-center group">
+                        <span className="text-xs text-white/80">Cetak Informasi (B)</span>
+                        <kbd className="px-3 py-1 bg-white/10 rounded-lg border border-white/20 font-mono text-white text-xs">.</kbd>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Main Display Instructions */}
+                <Card className="bg-[#1e293b]/50 border-white/10 backdrop-blur-sm p-6 rounded-[2rem]">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="p-3 bg-blue-500/10 rounded-2xl text-blue-400"><Monitor size={24} /></div>
+                    <CardTitle className="text-2xl text-white">Display Utama</CardTitle>
+                  </div>
+                  <div className="space-y-6">
+                    <p className="text-sm text-primary-foreground/60 leading-relaxed">Operasional standar untuk petugas di layanan utama rutan.</p>
+                    <div className="grid grid-cols-2 gap-3 text-[10px] bg-black/30 p-4 rounded-2xl border border-white/5">
+                      <div className="space-y-1">
+                        <p className="text-gold uppercase font-bold">Panggil: 1-4</p>
+                        <p className="text-blue-400 uppercase font-bold">Ulang: 7-9, 6</p>
+                      </div>
+                      <div className="text-right flex flex-col justify-center">
+                        <p className="text-red-400 uppercase font-bold">Reset: 0</p>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+
+              {/* 2. Detailed Antrian Khusus Workflow */}
+              <section className="bg-[#1e293b]/30 rounded-[2.5rem] border border-emerald-500/10 p-8 md:p-12 backdrop-blur-md">
+                <div className="flex flex-col lg:flex-row gap-12">
+                  <div className="lg:w-1/3">
+                    <div className="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-400 mb-6">
+                      <Settings size={32} />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-4">Layar Antrian Khusus</h3>
+                    <p className="text-sm text-primary-foreground/60 leading-relaxed mb-8">
+                      Fitur fleksibel untuk mengatur 2 sampai 6 loket pendaftaran sekaligus. Sangat berguna saat terjadi lonjakan pengunjung.
+                    </p>
+
+                    <div className="space-y-4">
+                      <h4 className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Alur Penggunaan:</h4>
+                      <ul className="space-y-3">
+                        {[
+                          "Buka halaman Antrian Khusus",
+                          "Atur jumlah loket aktif (2-6)",
+                          "Aktifkan/nonaktifkan loket informasi",
+                          "Gunakan Numpad keyboard untuk kontrol"
+                        ].map((text, i) => (
+                          <li key={i} className="flex gap-3 text-xs text-white/80 items-center">
+                            <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] font-bold">{i + 1}</span>
+                            {text}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="flex-1 space-y-8">
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="bg-black/30 rounded-3xl p-6 border border-white/5">
+                        <h4 className="text-xs font-bold text-gold flex items-center gap-2 mb-6 uppercase tracking-wider">
+                          <Keyboard size={14} /> Pintasan Pendaftaran (A)
+                        </h4>
+                        <div className="space-y-4 text-xs">
+                          <div className="flex justify-between items-center bg-white/5 p-3 rounded-2xl">
+                            <span>Panggil Tiket Baru</span>
+                            <kbd className="bg-gold text-navy-dark px-2 rounded-lg font-bold">1 - 6</kbd>
+                          </div>
+                          <div className="flex justify-between items-center bg-white/5 p-3 rounded-2xl">
+                            <span>Panggil Ulang (Recall)</span>
+                            <kbd className="bg-blue-500 text-white px-2 rounded-lg font-bold">7-9 / * -</kbd>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="bg-emerald-500/5 rounded-3xl p-6 border border-emerald-500/10">
+                        <h4 className="text-xs font-bold text-emerald-400 flex items-center gap-2 mb-6 uppercase tracking-wider">
+                          <Info size={14} /> Pintasan Informasi (B)
+                        </h4>
+                        <div className="space-y-4 text-xs">
+                          <div className="flex justify-between items-center bg-emerald-500/10 p-3 rounded-2xl">
+                            <span>Panggil Tiket Baru</span>
+                            <kbd className="bg-emerald-400 text-emerald-950 px-2 rounded-lg font-bold text-sm">+</kbd>
+                          </div>
+                          <div className="flex justify-between items-center bg-emerald-500/10 p-3 rounded-2xl">
+                            <span>Panggil Ulang (Recall)</span>
+                            <kbd className="bg-emerald-300 text-emerald-950 px-2 rounded-lg font-bold text-[9px]">ScrollLock</kbd>
+                          </div>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="mt-4 pt-3 border-t border-white/10">
-                      <li className="flex items-start gap-3">
-                        <kbd className="px-2 py-1 bg-red-500/20 text-red-200 rounded border border-red-500/30 font-mono text-xs">0</kbd>
-                        <span className="text-sm">Reset seluruh antrian kembali ke 0 (Gunakan pada awal hari).</span>
-                      </li>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="bg-white/5 rounded-3xl p-6 border border-white/5">
+                        <h4 className="text-xs font-bold text-white/40 flex items-center gap-2 mb-4 uppercase tracking-wider">
+                          <Printer size={14} /> Cetak dari Display
+                        </h4>
+                        <div className="flex gap-4">
+                          <div className="flex-1 bg-black/20 p-3 rounded-2xl flex flex-col items-center">
+                            <span className="text-[10px] mb-2">Tiket Registrasi A</span>
+                            <kbd className="bg-white/10 px-3 py-1 rounded-lg">Enter</kbd>
+                          </div>
+                          <div className="flex-1 bg-black/20 p-3 rounded-2xl flex flex-col items-center">
+                            <span className="text-[10px] mb-2">Tiket Info B</span>
+                            <kbd className="bg-white/10 px-3 py-1 rounded-lg">Titik .</kbd>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="bg-red-500/5 rounded-3xl p-6 border border-red-500/10 flex items-center justify-between">
+                        <div>
+                          <p className="text-xs font-bold text-white">Reset Semua Antrian</p>
+                          <p className="text-[10px] text-red-100/40 uppercase">Hanya Awal Hari Kerja</p>
+                        </div>
+                        <kbd className="bg-red-600 text-white w-10 h-10 flex items-center justify-center rounded-xl font-bold border-2 border-red-500/50 text-xl shadow-lg shadow-red-900/40">0</kbd>
+                      </div>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </section>
+
             </div>
           </div>
 

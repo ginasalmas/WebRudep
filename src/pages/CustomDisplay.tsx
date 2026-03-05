@@ -8,8 +8,11 @@ import {
     callNext,
     markServed,
     getCalledByLoket,
+    takeNumber,
+    recallCurrent,
     resetQueue,
 } from "@/lib/queueStore";
+import { printTicketDirectly } from "@/lib/printTicket";
 import { announceQueue, announceQueueEmpty } from "@/lib/tts";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
@@ -79,18 +82,51 @@ const CustomDisplay = () => {
             return;
         }
 
-        // Shortcut 1-6 for Registration (Service A)
-        const numKey = parseInt(key);
-        if (!isNaN(numKey) && numKey >= 1 && numKey <= 6) {
-            if (isAnnouncingRef.current) return;
-            if (numKey <= settings.registrationCount) {
-                await processCall(numKey, 'A');
-            }
+        if (isAnnouncingRef.current) return;
+
+        // --- CALILING SHORTCUTS (Numpad 1-6) ---
+        const callMap: { [key: string]: number } = {
+            "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6
+        };
+
+        if (callMap[key] && callMap[key] <= settings.registrationCount) {
+            await processCall(callMap[key], 'A');
+            return;
         }
 
-        // Shortcut 9 for Information (Service B)
-        if (key === "9" && settings.showInfoLoket) {
-            await processCall(9, 'B');
+        // --- RECALL SHORTCUTS (Numpad 7, 8, 9, /, *, -) ---
+        const recallMap: { [key: string]: number } = {
+            "7": 1, "8": 2, "9": 3, "/": 4, "*": 5, "-": 6
+        };
+
+        if (recallMap[key] && recallMap[key] <= settings.registrationCount) {
+            await processRecall(recallMap[key]);
+            return;
+        }
+
+        // --- INFORMATION SHORTCUTS ---
+        if ((key === "+" || key === "9") && settings.showInfoLoket) {
+            // Priority to + for info call
+            if (key === "+" || key === "9") await processCall(9, 'B');
+            return;
+        }
+
+        if (key === "ScrollLock" && settings.showInfoLoket) {
+            await processRecall(9);
+            return;
+        }
+
+        // --- PRINTING SHORTCUTS ---
+        if (key === "Enter") {
+            const ticket = takeNumber("A");
+            printTicketDirectly(ticket);
+            return;
+        }
+
+        if (key === ".") {
+            const ticket = takeNumber("B");
+            printTicketDirectly(ticket);
+            return;
         }
 
     }, [settings]);
@@ -98,8 +134,9 @@ const CustomDisplay = () => {
     const processCall = async (loket: number, serviceType: 'A' | 'B') => {
         if (isAnnouncingRef.current) return;
 
-        const current = getCalledByLoket(loket);
+        const current = getInitialState().calledByLoket[loket];
         if (current) markServed(loket);
+
         const ticket = callNext(loket, serviceType);
 
         isAnnouncingRef.current = true;
@@ -112,6 +149,20 @@ const CustomDisplay = () => {
             }
         } finally {
             isAnnouncingRef.current = false;
+        }
+    };
+
+    const processRecall = async (loket: number) => {
+        if (isAnnouncingRef.current) return;
+
+        const ticket = recallCurrent(loket);
+        if (ticket) {
+            isAnnouncingRef.current = true;
+            try {
+                await announceQueue(ticket.formattedNumber, loket);
+            } finally {
+                isAnnouncingRef.current = false;
+            }
         }
     };
 
@@ -342,14 +393,14 @@ const CustomDisplay = () => {
                 <div className="flex-[1.5] flex flex-col gap-6 h-full">
                     <div className="flex-1 rounded-3xl bg-[#1e293b]/60 border border-gold shadow-[0_0_25px_rgba(212,175,55,0.1)] p-1 overflow-hidden relative">
                         <video src="/VIDEO PROFILE RUTAN DEPOK 2025.mp4" autoPlay loop muted playsInline className="w-full h-full object-cover rounded-[22px]" />
-                        <div className="absolute top-4 left-4 bg-navy-dark/80 backdrop-blur-md px-4 py-2 rounded-xl border border-gold/30 flex items-center gap-2">
+                        {/*<div className="absolute top-4 left-4 bg-navy-dark/80 backdrop-blur-md px-4 py-2 rounded-xl border border-gold/30 flex items-center gap-2">
                             <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
                             <span className="text-xs font-bold tracking-widest uppercase">LIVE DISPLAY</span>
-                        </div>
+                        </div>*/}
                     </div>
 
                     <div className="grid grid-cols-2 gap-6 h-32 shrink-0">
-                        <div className="bg-[#1e293b]/60 rounded-2xl border-2 border-gold flex flex-col justify-center items-center px-6 relative overflow-hidden group">
+                        <div className={`bg-[#1e293b]/60 rounded-2xl border-2 border-gold flex flex-col justify-center items-center px-6 relative overflow-hidden group transition-all duration-500 ${!settings.showInfoLoket ? 'col-span-2' : ''}`}>
                             <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
                                 <Users size={60} className="text-gold" />
                             </div>
@@ -360,16 +411,18 @@ const CustomDisplay = () => {
                             </div>
                         </div>
 
-                        <div className={`bg-[#1e293b]/60 rounded-2xl border-2 border-emerald-500 flex flex-col justify-center items-center px-6 relative overflow-hidden group transition-all duration-500 ${settings.showInfoLoket ? 'opacity-100 scale-100' : 'opacity-20 scale-95 grayscale'}`}>
-                            <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
-                                <Users size={60} className="text-emerald-500" />
+                        {settings.showInfoLoket && (
+                            <div className="bg-[#1e293b]/60 rounded-2xl border-2 border-emerald-500 flex flex-col justify-center items-center px-6 relative overflow-hidden group transition-all duration-500">
+                                <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
+                                    <Users size={60} className="text-emerald-500" />
+                                </div>
+                                <h4 className="text-emerald-400 text-sm font-bold uppercase mb-1 tracking-wider">ANTRIAN INFORMASI</h4>
+                                <div className="flex items-baseline gap-3">
+                                    <span className="text-5xl font-bold tracking-tighter text-white">{waitingB.length}</span>
+                                    <span className="text-[10px] font-medium opacity-40 uppercase tracking-widest">MENUNGGU</span>
+                                </div>
                             </div>
-                            <h4 className="text-emerald-400 text-sm font-bold uppercase mb-1 tracking-wider">ANTRIAN INFORMASI</h4>
-                            <div className="flex items-baseline gap-3">
-                                <span className="text-5xl font-bold tracking-tighter text-white">{waitingB.length}</span>
-                                <span className="text-[10px] font-medium opacity-40 uppercase tracking-widest">MENUNGGU</span>
-                            </div>
-                        </div>
+                        )}
                     </div>
                 </div>
 
