@@ -260,7 +260,7 @@ const Index = () => {
                     </div>
                     <h3 className="text-2xl font-bold text-white mb-4">Layar Antrian Khusus</h3>
                     <p className="text-sm text-primary-foreground/60 leading-relaxed mb-8">
-                      Fitur fleksibel untuk mengatur 2 sampai 6 loket pendaftaran sekaligus. Sangat berguna saat terjadi lonjakan pengunjung.
+                      Fitur fleksibel untuk mengatur 2 sampai 10 loket pendaftaran sekaligus. Sangat berguna saat terjadi lonjakan pengunjung.
                     </p>
 
                     <div className="space-y-4">
@@ -268,7 +268,7 @@ const Index = () => {
                       <ul className="space-y-3">
                         {[
                           "Buka halaman Antrian Khusus",
-                          "Atur jumlah loket aktif (2-6)",
+                          "Atur jumlah loket aktif (2-10)",
                           "Aktifkan/nonaktifkan loket informasi",
                           "Gunakan Numpad keyboard untuk kontrol"
                         ].map((text, i) => (
@@ -290,11 +290,11 @@ const Index = () => {
                         <div className="space-y-4 text-xs">
                           <div className="flex justify-between items-center bg-white/5 p-3 rounded-2xl">
                             <span>Panggil Tiket Baru</span>
-                            <kbd className="bg-gold text-navy-dark px-2 rounded-lg font-bold">1 - 6</kbd>
+                            <kbd className="bg-gold text-navy-dark px-2 rounded-lg font-bold">1-6 / Q-P</kbd>
                           </div>
                           <div className="flex justify-between items-center bg-white/5 p-3 rounded-2xl">
                             <span>Panggil Ulang (Recall)</span>
-                            <kbd className="bg-blue-500 text-white px-2 rounded-lg font-bold">7-9 / * -</kbd>
+                            <kbd className="bg-blue-500 text-white px-2 rounded-lg font-bold">7-9 / Shift+Q-P</kbd>
                           </div>
                         </div>
                       </div>

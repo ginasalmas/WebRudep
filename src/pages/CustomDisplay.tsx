@@ -84,9 +84,10 @@ const CustomDisplay = () => {
 
         if (isAnnouncingRef.current) return;
 
-        // --- CALILING SHORTCUTS (Numpad 1-6) ---
+        // --- CALLING SHORTCUTS ---
         const callMap: { [key: string]: number } = {
-            "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6
+            "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6,
+            "q": 1, "w": 2, "e": 3, "r": 4, "t": 5, "y": 6, "u": 7, "i": 8, "o": 9, "p": 10
         };
 
         if (callMap[key] && callMap[key] <= settings.registrationCount) {
@@ -94,9 +95,10 @@ const CustomDisplay = () => {
             return;
         }
 
-        // --- RECALL SHORTCUTS (Numpad 7, 8, 9, /, *, -) ---
+        // --- RECALL SHORTCUTS ---
         const recallMap: { [key: string]: number } = {
-            "7": 1, "8": 2, "9": 3, "/": 4, "*": 5, "-": 6
+            "7": 1, "8": 2, "9": 3, "/": 4, "*": 5, "-": 6,
+            "Q": 1, "W": 2, "E": 3, "R": 4, "T": 5, "Y": 6, "U": 7, "I": 8, "O": 9, "P": 10
         };
 
         if (recallMap[key] && recallMap[key] <= settings.registrationCount) {
@@ -236,13 +238,13 @@ const CustomDisplay = () => {
                                             variant="outline"
                                             size="icon"
                                             className="h-12 w-12 rounded-xl border-gold/20 hover:bg-gold/10 text-gold"
-                                            onClick={() => handleSaveSettings({ ...settings, registrationCount: Math.min(6, settings.registrationCount + 1) })}
+                                            onClick={() => handleSaveSettings({ ...settings, registrationCount: Math.min(10, settings.registrationCount + 1) })}
                                         >
                                             <Plus size={20} />
                                         </Button>
                                     </div>
                                 </div>
-                                <p className="text-xs text-white/30 italic">Pilih antara 2 sampai 6 loket.</p>
+                                <p className="text-xs text-white/30 italic">Pilih antara 2 sampai 10 loket.</p>
                             </div>
 
                             <div className="flex items-center justify-between p-4 bg-black/20 rounded-2xl border border-white/5">
