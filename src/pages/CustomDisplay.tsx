@@ -281,32 +281,35 @@ const CustomDisplay = () => {
         const baseBorderColor = isInfo ? 'border-emerald-500' : 'border-gold';
         const textTheme = isInfo ? "text-emerald-400" : "text-gold";
         const bgTheme = isInfo ? "bg-emerald-500" : "bg-gold";
+        const isHighCount = (settings.registrationCount + (settings.showInfoLoket ? 1 : 0)) > 6;
         const blinkClass = isInfo ? 'animate-active-emerald-smooth' : 'animate-active-gold-smooth';
 
         return (
             <div className={`
-        relative flex flex-row items-center justify-between px-6 py-4 rounded-2xl border-[3px] transition-all duration-700
+        relative flex flex-row items-center justify-between rounded-xl border-[3px] transition-all duration-700
+        ${isHighCount ? 'px-3 py-1.5' : 'px-6 py-4'}
         ${(isActive || hasData)
                     ? `bg-[#1e293b]/80 ${baseBorderColor}`
                     : 'bg-[#1e293b]/10 border-white/5'}
         ${isActive ? blinkClass : ''}
       `}>
                 <div className="flex flex-col">
-                    <h3 className={`text-xl font-bold tracking-tight ${(isActive || hasData) ? "text-white" : "text-white/10"} uppercase`}>
+                    <h3 className={`font-bold tracking-tight ${(isActive || hasData) ? "text-white" : "text-white/10"} uppercase`}
+                        style={{ fontSize: isHighCount ? 'clamp(1rem, 3vh, 2.2rem)' : 'clamp(1.5rem, 4.5vh, 4rem)' }}>
                         {title}
                     </h3>
                 </div>
 
-                <div className={`mx-2 ${(isActive || hasData) ? textTheme : "text-white/5"}`}>
-                    <ChevronRight size={32} strokeWidth={2.5} />
+                <div className={`mx-1 ${(isActive || hasData) ? textTheme : "text-white/5"}`}>
+                    <ChevronRight size={isHighCount ? 20 : 32} strokeWidth={2.5} className="w-[2.5vh] h-[2.5vh]" />
                 </div>
 
                 <div className={`
-          min-w-[120px] h-14 flex items-center justify-center rounded-xl font-mono text-4xl font-bold tracking-tighter
+          min-w-[80px] h-10 md:h-[6vh] flex items-center justify-center rounded-lg font-mono font-bold tracking-tighter
           ${(isActive || hasData)
                         ? `${bgTheme} text-[#0f172a]`
                         : 'bg-white/5 text-white/5'}
-        `}>
+        `} style={{ fontSize: isHighCount ? 'clamp(1.2rem, 4.5vh, 3rem)' : 'clamp(2rem, 6vh, 4.5rem)' }}>
                     {ticket ? ticket.formattedNumber : (lastTicketRef.current[loket] || "---")}
                 </div>
             </div>
@@ -362,10 +365,10 @@ const CustomDisplay = () => {
                 <div className="flex items-center gap-6">
                     <InstitutionLogo size="lg" />
                     <div className="flex flex-col">
-                        <h1 className="text-xl font-semibold tracking-tight leading-tight opacity-90 uppercase">
+                        <h1 className="text-xl md:text-2xl lg:text-3xl font-semibold tracking-tight leading-tight opacity-90 uppercase">
                             KEMENTERIAN IMIGRASI DAN PEMASYARAKATAN
                         </h1>
-                        <h1 className="text-gold text-xl font-bold tracking-tight leading-tight uppercase">
+                        <h1 className="text-gold text-xl md:text-2xl lg:text-3xl font-bold tracking-tight leading-tight uppercase">
                             RUMAH TAHANAN NEGARA KELAS I DEPOK
                         </h1>
                     </div>
@@ -380,10 +383,10 @@ const CustomDisplay = () => {
                         <Settings size={24} />
                     </Button>
                     <div className="text-right border-l-2 border-white/10 pl-8">
-                        <p className="text-[10px] font-medium opacity-40 uppercase tracking-[0.2em] mb-1">
+                        <p className="text-[10px] md:text-xs font-medium opacity-40 uppercase tracking-[0.2em] mb-1">
                             {format(currentTime, "EEEE, dd MMMM yyyy", { locale: id })}
                         </p>
-                        <p className="text-4xl font-mono font-bold text-gold tracking-tighter leading-none">
+                        <p className="text-4xl md:text-5xl lg:text-6xl font-mono font-bold text-gold tracking-tighter leading-none">
                             {format(currentTime, "HH:mm:ss")}
                         </p>
                     </div>
@@ -401,27 +404,27 @@ const CustomDisplay = () => {
                         </div>*/}
                     </div>
 
-                    <div className="grid grid-cols-2 gap-6 h-32 shrink-0">
-                        <div className={`bg-[#1e293b]/60 rounded-2xl border-2 border-gold flex flex-col justify-center items-center px-6 relative overflow-hidden group transition-all duration-500 ${!settings.showInfoLoket ? 'col-span-2' : ''}`}>
+                    <div className="grid grid-cols-2 gap-[2vh] h-[22vh] shrink-0">
+                        <div className={`bg-[#1e293b]/60 rounded-2xl border-2 border-gold flex flex-col justify-start items-center px-6 pt-[4vh] pb-[2vh] relative overflow-hidden group transition-all duration-500 ${!settings.showInfoLoket ? 'col-span-2' : ''}`}>
                             <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
                                 <Users size={60} className="text-gold" />
                             </div>
-                            <h4 className="text-gold text-sm font-bold uppercase mb-1 tracking-wider">ANTRIAN KUNJUNGAN</h4>
+                            <h4 className="text-gold font-bold uppercase mb-1 tracking-wider" style={{ fontSize: 'clamp(0.8rem, 2vh, 1.5rem)' }}>ANTRIAN KUNJUNGAN</h4>
                             <div className="flex items-baseline gap-3">
-                                <span className="text-5xl font-bold tracking-tighter text-white">{waitingA.length}</span>
-                                <span className="text-[10px] font-medium opacity-40 uppercase tracking-widest">MENUNGGU</span>
+                                <span className="font-bold tracking-tighter text-white" style={{ fontSize: 'clamp(3rem, 8vh, 6rem)' }}>{waitingA.length}</span>
+                                <span className="text-[10px] md:text-xs font-medium opacity-40 uppercase tracking-widest">MENUNGGU</span>
                             </div>
                         </div>
 
                         {settings.showInfoLoket && (
-                            <div className="bg-[#1e293b]/60 rounded-2xl border-2 border-emerald-500 flex flex-col justify-center items-center px-6 relative overflow-hidden group transition-all duration-500">
+                            <div className="bg-[#1e293b]/60 rounded-2xl border-2 border-emerald-500 flex flex-col justify-start items-center px-6 pt-[4vh] pb-[2vh] relative overflow-hidden group transition-all duration-500">
                                 <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
                                     <Users size={60} className="text-emerald-500" />
                                 </div>
-                                <h4 className="text-emerald-400 text-sm font-bold uppercase mb-1 tracking-wider">ANTRIAN INFORMASI</h4>
+                                <h4 className="text-emerald-400 font-bold uppercase mb-1 tracking-wider" style={{ fontSize: 'clamp(0.8rem, 2vh, 1.5rem)' }}>ANTRIAN INFORMASI</h4>
                                 <div className="flex items-baseline gap-3">
-                                    <span className="text-5xl font-bold tracking-tighter text-white">{waitingB.length}</span>
-                                    <span className="text-[10px] font-medium opacity-40 uppercase tracking-widest">MENUNGGU</span>
+                                    <span className="font-bold tracking-tighter text-white" style={{ fontSize: 'clamp(3rem, 8vh, 6rem)' }}>{waitingB.length}</span>
+                                    <span className="text-[10px] md:text-xs font-medium opacity-40 uppercase tracking-widest">MENUNGGU</span>
                                 </div>
                             </div>
                         )}
@@ -430,12 +433,18 @@ const CustomDisplay = () => {
 
                 {/* LOKET LIST SECTION */}
                 <div className="flex-[2.5] flex flex-col h-full overflow-hidden">
-                    <div className="bg-gold/10 border border-gold/40 rounded-2xl py-3 mb-4 flex items-center justify-center shrink-0">
-                        <span className="text-gold text-lg font-bold uppercase tracking-[0.2em]">DAFTAR PEMANGGILAN LOKET</span>
+                    {/* Header with dynamic padding */}
+                    <div className={`bg-gold/10 border border-gold/40 rounded-2xl flex items-center justify-center shrink-0 
+                        ${(settings.registrationCount + (settings.showInfoLoket ? 1 : 0)) > 6 ? 'py-2 mb-2' : 'py-6 mb-6'}`}>
+                        <span className="text-gold font-bold uppercase tracking-[0.2em] px-4 text-center"
+                            style={{ fontSize: (settings.registrationCount + (settings.showInfoLoket ? 1 : 0)) > 6 ? 'clamp(1rem, 2.5vh, 2rem)' : 'clamp(1.5rem, 4vh, 3rem)' }}>
+                            DAFTAR PEMANGGILAN LOKET
+                        </span>
                     </div>
 
-                    <div className={`grid gap-4 h-full overflow-y-auto pr-2 custom-scrollbar ${settings.registrationCount <= 4 ? 'grid-cols-1' : 'grid-cols-2'
-                        }`}>
+                    <div className={`grid h-full overflow-hidden 
+                        ${(settings.registrationCount + (settings.showInfoLoket ? 1 : 0)) <= 3 ? 'grid-cols-1' : 'grid-cols-2'} 
+                        ${(settings.registrationCount + (settings.showInfoLoket ? 1 : 0)) > 6 ? 'gap-x-4 gap-y-1' : 'gap-4'}`}>
                         {/* Service A Lokets */}
                         {Array.from({ length: settings.registrationCount }).map((_, i) => (
                             <LoketCard
@@ -459,7 +468,7 @@ const CustomDisplay = () => {
 
             <footer className="bg-gold h-10 flex items-center overflow-hidden shrink-0 relative">
                 <div className="animate-marquee-full">
-                    <span className="text-navy-dark font-black text-lg uppercase tracking-widest py-1">
+                    <span className="text-navy-dark font-black uppercase tracking-widest py-1" style={{ fontSize: 'clamp(1rem, 2.5vh, 2rem)' }}>
                         {runningText}
                     </span>
                 </div>
