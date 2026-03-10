@@ -2,6 +2,7 @@
 // Supports two service types: A (Pendaftaran) and B (Informasi)
 
 export type ServiceType = 'A' | 'B';
+export type ThemeMode = 'DEFAULT' | 'LEBARAN' | 'NATAL' | 'TAHUN_BARU' | 'NASIONAL';
 export type QueueMode = 'NORMAL' | 'SIMPLIFIED';
 
 export interface QueueTicket {
@@ -28,6 +29,7 @@ export interface QueueState {
   config: {
     mode: QueueMode;
     runningText: string;
+    theme: ThemeMode;
   };
 }
 
@@ -82,7 +84,11 @@ export const getInitialState = (): QueueState => {
           currentNumberB: 0,
           lastReset: today,
           calledByLoket: getEmptyCalledByLoket(),
-          config: parsed.config || { mode: 'NORMAL', runningText: '✯✧☆ SELAMAT DATANG DI RUMAH TAHANAN NEGARA KELAS I DEPOK ✯✧☆ KAMI BERKOMITMEN MEMBERIKAN PELAYANAN YANG CEPAT, TRANSPARAN, DAN PROFESIONAL ✯✧☆ MOHON ANTRI DENGAN TERTIB DEMI KENYAMANAN BERSAMA ✯✧☆ HUBUNGI PETUGAS JIKA MEMBUTUHKAN BANTUAN ✯✧☆' },
+          config: parsed.config || {
+            mode: 'NORMAL',
+            runningText: '✯✧☆ SELAMAT DATANG DI RUMAH TAHANAN NEGARA KELAS I DEPOK ✯✧☆ KAMI BERKOMITMEN MEMBERIKAN PELAYANAN YANG CEPAT, TRANSPARAN, DAN PROFESIONAL ✯✧☆ MOHON ANTRI DENGAN TERTIB DEMI KENYAMANAN BERSAMA ✯✧☆ HUBUNGI PETUGAS JIKA MEMBUTUHKAN BANTUAN ✯✧☆',
+            theme: 'DEFAULT'
+          },
         };
       }
 
@@ -98,7 +104,11 @@ export const getInitialState = (): QueueState => {
           currentNumberB: 0,
           lastReset: parsed.lastReset,
           calledByLoket: parseCalledByLoket(parsed.calledByLoket),
-          config: parsed.config || { mode: 'NORMAL', runningText: '✯✧☆ SELAMAT DATANG DI RUMAH TAHANAN NEGARA KELAS I DEPOK ✯✧☆ KAMI BERKOMITMEN MEMBERIKAN PELAYANAN YANG CEPAT, TRANSPARAN, DAN PROFESIONAL ✯✧☆ MOHON ANTRI DENGAN TERTIB DEMI KENYAMANAN BERSAMA ✯✧☆ HUBUNGI PETUGAS JIKA MEMBUTUHKAN BANTUAN ✯✧☆' },
+          config: parsed.config || {
+            mode: 'NORMAL',
+            runningText: '✯✧☆ SELAMAT DATANG DI RUMAH TAHANAN NEGARA KELAS I DEPOK ✯✧☆ KAMI BERKOMITMEN MEMBERIKAN PELAYANAN YANG CEPAT, TRANSPARAN, DAN PROFESIONAL ✯✧☆ MOHON ANTRI DENGAN TERTIB DEMI KENYAMANAN BERSAMA ✯✧☆ HUBUNGI PETUGAS JIKA MEMBUTUHKAN BANTUAN ✯✧☆',
+            theme: 'DEFAULT'
+          },
         };
       }
 
@@ -108,7 +118,8 @@ export const getInitialState = (): QueueState => {
         calledByLoket: parseCalledByLoket(parsed.calledByLoket),
         config: {
           mode: parsed.config?.mode || 'NORMAL',
-          runningText: parsed.config?.runningText || '✯✧☆ SELAMAT DATANG DI RUMAH TAHANAN NEGARA KELAS I DEPOK ✯✧☆ KAMI BERKOMITMEN MEMBERIKAN PELAYANAN YANG CEPAT, TRANSPARAN, DAN PROFESIONAL ✯✧☆ MOHON ANTRI DENGAN TERTIB DEMI KENYAMANAN BERSAMA ✯✧☆ HUBUNGI PETUGAS JIKA MEMBUTUHKAN BANTUAN ✯✧☆'
+          runningText: parsed.config?.runningText || '✯✧☆ SELAMAT DATANG DI RUMAH TAHANAN NEGARA KELAS I DEPOK ✯✧☆ KAMI BERKOMITMEN MEMBERIKAN PELAYANAN YANG CEPAT, TRANSPARAN, DAN PROFESIONAL ✯✧☆ MOHON ANTRI DENGAN TERTIB DEMI KENYAMANAN BERSAMA ✯✧☆ HUBUNGI PETUGAS JIKA MEMBUTUHKAN BANTUAN ✯✧☆',
+          theme: parsed.config?.theme || 'DEFAULT'
         },
       };
     } catch {
@@ -124,7 +135,8 @@ export const getInitialState = (): QueueState => {
     calledByLoket: getEmptyCalledByLoket(),
     config: {
       mode: 'NORMAL',
-      runningText: '✯✧☆ SELAMAT DATANG DI RUMAH TAHANAN NEGARA KELAS I DEPOK ✯✧☆ KAMI BERKOMITMEN MEMBERIKAN PELAYANAN YANG CEPAT, TRANSPARAN, DAN PROFESIONAL ✯✧☆ MOHON ANTRI DENGAN TERTIB DEMI KENYAMANAN BERSAMA ✯✧☆ HUBUNGI PETUGAS JIKA MEMBUTUHKAN BANTUAN ✯✧☆'
+      runningText: '✯✧☆ SELAMAT DATANG DI RUMAH TAHANAN NEGARA KELAS I DEPOK ✯✧☆ KAMI BERKOMITMEN MEMBERIKAN PELAYANAN YANG CEPAT, TRANSPARAN, DAN PROFESIONAL ✯✧☆ MOHON ANTRI DENGAN TERTIB DEMI KENYAMANAN BERSAMA ✯✧☆ HUBUNGI PETUGAS JIKA MEMBUTUHKAN BANTUAN ✯✧☆',
+      theme: 'DEFAULT'
     },
   };
 };
@@ -280,6 +292,12 @@ export const setQueueMode = (mode: QueueMode): void => {
 export const setRunningText = (text: string): void => {
   const state = getInitialState();
   state.config.runningText = text;
+  saveState(state);
+};
+
+export const setTheme = (theme: ThemeMode): void => {
+  const state = getInitialState();
+  state.config.theme = theme;
   saveState(state);
 };
 

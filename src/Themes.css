@@ -1,0 +1,46 @@
+/* Themes.css */
+
+/* Snowflake Animation (Natal) */
+@keyframes fall {
+  0% { transform: translateY(-10vh) rotate(0deg); }
+  100% { transform: translateY(110vh) rotate(360deg); }
+}
+
+.snowflake {
+  position: absolute;
+  top: -10vh;
+  color: white;
+  font-size: 1.5rem;
+  user-select: none;
+  z-index: 1;
+  animation: fall linear infinite;
+}
+
+/* Firework Animation (Tahun Baru) */
+@keyframes explode {
+  0% { transform: scale(0); opacity: 1; }
+  100% { transform: scale(2); opacity: 0; }
+}
+
+.firework {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  box-shadow: 
+    0 0 10px 2px #fff,
+    20px 20px 10px 2px #gold,
+    -20px -20px 10px 2px #silver,
+    20px -20px 10px 2px #orange,
+    -20px 20px 10px 2px #red;
+  animation: explode 2s ease-out infinite;
+}
+
+/* Base theme transitions */
+body {
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.theme-transition {
+  transition: all 0.5s ease-in-out;
+}

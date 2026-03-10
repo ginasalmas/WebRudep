@@ -12,7 +12,8 @@ import {
   resetQueue,
   takeNumber,
   setQueueMode,
-  QueueMode
+  QueueMode,
+  ThemeMode
 } from "@/lib/queueStore";
 import { printTicketDirectly } from "@/lib/printTicket";
 import { announceQueue, announceQueueEmpty } from "@/lib/tts";
@@ -29,6 +30,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { ThemeBackground } from "@/components/ThemeElements";
+import { themes } from "@/lib/themes";
+import "@/Themes.css";
 
 const Display = () => {
   const [calledByLoket, setCalledByLoket] = useState<CalledByLoket>({ 1: null, 2: null, 3: null, 4: null });
@@ -38,6 +42,7 @@ const Display = () => {
   const [showResetDialog, setShowResetDialog] = useState(false);
   const [mode, setMode] = useState<QueueMode>("SIMPLIFIED");
   const [runningText, setRunningTextState] = useState("");
+  const [currentThemeId, setCurrentThemeId] = useState<ThemeMode>("DEFAULT");
 
   const lastPressRef = useRef(0);
   const lastCallPressRef = useRef(0);
@@ -134,6 +139,7 @@ const Display = () => {
     setCalledByLoket(state.calledByLoket);
     setMode(state.config.mode);
     setRunningTextState(state.config.runningText);
+    setCurrentThemeId(state.config.theme || 'DEFAULT');
 
     Object.keys(state.calledByLoket).forEach((key) => {
       const k = parseInt(key);
@@ -144,6 +150,7 @@ const Display = () => {
       setCalledByLoket(state.calledByLoket);
       setMode(state.config.mode);
       setRunningTextState(state.config.runningText);
+      setCurrentThemeId(state.config.theme || 'DEFAULT');
       Object.keys(state.calledByLoket).forEach((key) => {
         const k = parseInt(key);
         if (state.calledByLoket[k]) lastTicketRef.current[k] = state.calledByLoket[k]!.formattedNumber;
@@ -161,42 +168,39 @@ const Display = () => {
     };
   }, [handleKeyPress]);
 
+  const theme = themes[currentThemeId];
+  const primaryColor = theme.colors.primary;
+
   const LoketCard = ({ loket, ticket }: { loket: number; ticket: QueueTicket | null }) => {
     const hasData = lastTicketRef.current[loket] !== "---";
     const isActive = !!ticket;
     const isInfoLoket = mode === "NORMAL" && loket === 4;
 
-    const baseBorderColor = isInfoLoket ? 'border-emerald-500' : 'border-gold';
-    const textTheme = isInfoLoket ? "text-emerald-400" : "text-gold";
-    const bgTheme = isInfoLoket ? "bg-emerald-500" : "bg-gold";
-
-    // Memakai animasi smooth-glow
-    const blinkClass = isInfoLoket ? 'animate-active-emerald-smooth' : 'animate-active-gold-smooth';
+    const activeBorderColor = isInfoLoket ? '#10b981' : primaryColor;
+    const activeTextColor = isInfoLoket ? '#10b981' : primaryColor;
+    const activeBgColor = isInfoLoket ? '#10b981' : primaryColor;
 
     return (
-      <div className={`
-        relative flex flex-row items-center justify-between px-8 rounded-2xl border-[3px] transition-all duration-700 h-full
-        ${(isActive || hasData)
-          ? `bg-[#1e293b]/80 ${baseBorderColor}`
-          : 'bg-[#1e293b]/10 border-white/5'}
-        ${isActive ? blinkClass : ''}
-      `}>
+      <div
+        className={`relative flex flex-row items-center justify-between px-8 rounded-2xl border-[3px] transition-all duration-700 h-full ${isActive ? (isInfoLoket ? 'animate-active-emerald-smooth' : 'animate-active-primary-smooth') : ''
+          }`}
+        style={{
+          borderColor: (isActive || hasData) ? activeBorderColor : 'rgba(255,255,255,0.05)',
+          backgroundColor: (isActive || hasData) ? 'rgba(30,41,59,0.8)' : 'rgba(30,41,59,0.1)',
+        }}
+      >
         <div className="flex flex-col">
-          <h3 className={`text-3xl font-semibold tracking-tight ${(isActive || hasData) ? "text-white" : "text-white/10"}`}>
+          <h3 className={`text-3xl font-semibold tracking-tight ${(isActive || hasData) ? 'text-white' : 'text-white/10'}`}>
             LOKET {loket}
           </h3>
         </div>
-
-        <div className={`mx-2 ${(isActive || hasData) ? textTheme : "text-white/5"}`}>
+        <div style={{ color: (isActive || hasData) ? activeTextColor : 'rgba(255,255,255,0.05)' }} className="mx-2">
           <ChevronRight size={48} strokeWidth={2} />
         </div>
-
-        <div className={`
-          min-w-[150px] h-[75%] flex items-center justify-center rounded-2xl font-mono text-6xl font-bold tracking-tighter
-          ${(isActive || hasData)
-            ? `${bgTheme} text-[#0f172a]`
-            : 'bg-white/5 text-white/5'}
-        `}>
+        <div
+          className="min-w-[150px] h-[75%] flex items-center justify-center rounded-2xl font-mono text-6xl font-bold tracking-tighter"
+          style={(isActive || hasData) ? { backgroundColor: activeBgColor, color: theme.colors.background } : { backgroundColor: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.05)' }}
+        >
           {ticket ? ticket.formattedNumber : lastTicketRef.current[loket]}
         </div>
       </div>
@@ -204,12 +208,11 @@ const Display = () => {
   };
 
   return (
-    <div className="h-screen bg-[#0a1120] flex flex-col overflow-hidden text-white font-['Poppins']">
-      <style jsx global>{`
+    <div className="h-screen flex flex-col overflow-hidden text-white font-['Poppins'] relative transition-colors duration-500" style={{ backgroundColor: theme.colors.background }}>
+      <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Poppins', sans-serif; overflow: hidden; }
         
-        /* Animasi Marquee Ujung ke Ujung */
         @keyframes marquee-full {
           0% { transform: translateX(100vw); }
           100% { transform: translateX(-100%); }
@@ -220,38 +223,29 @@ const Display = () => {
           animation: marquee-full 35s linear infinite;
         }
         
-        /* Smooth Glow Animation Gold */
-        @keyframes active-gold-smooth {
-          0%, 100% { 
-            border-color: #D4AF37; 
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.1);
-            background-color: rgba(30, 41, 59, 0.8);
-          }
-          50% { 
-            border-color: #FFD700; 
-            box-shadow: 0 0 40px rgba(212, 175, 55, 0.4);
-            background-color: rgba(212, 175, 55, 0.15);
-          }
+        @keyframes active-primary-smooth {
+          0%, 100% { box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+          50% { box-shadow: 0 0 40px 4px ${primaryColor}66; }
         }
-        .animate-active-gold-smooth { animation: active-gold-smooth 1.5s ease-in-out infinite; }
+        .animate-active-primary-smooth { animation: active-primary-smooth 1.5s ease-in-out infinite; }
 
-        /* Smooth Glow Animation Emerald */
         @keyframes active-emerald-smooth {
           0%, 100% { 
             border-color: #10B981; 
             box-shadow: 0 0 10px rgba(16, 185, 129, 0.1);
-            background-color: rgba(30, 41, 59, 0.8);
           }
           50% { 
             border-color: #34D399; 
             box-shadow: 0 0 40px rgba(16, 185, 129, 0.4);
-            background-color: rgba(16, 185, 129, 0.15);
           }
         }
         .animate-active-emerald-smooth { animation: active-emerald-smooth 1.5s ease-in-out infinite; }
       `}</style>
 
-      <header className="px-8 py-4 flex items-center justify-between border-b-2 border-gold/30 bg-[#070d19] z-10 shrink-0">
+      {/* Thematic background decorations */}
+      <ThemeBackground theme={currentThemeId} />
+
+      <header className="px-8 py-4 flex items-center justify-between border-b-2 z-10 shrink-0 relative" style={{ borderColor: primaryColor + '50', backgroundColor: theme.colors.background + 'ee' }}>
         <div className="flex items-center gap-6">
           <div className="flex items-center justify-center">
             <InstitutionLogo size="lg" />
@@ -260,7 +254,7 @@ const Display = () => {
             <h1 className="text-2xl font-semibold tracking-tight leading-tight opacity-90 uppercase">
               KEMENTERIAN IMIGRASI DAN PEMASYARAKATAN
             </h1>
-            <h1 className="text-gold text-2xl font-bold tracking-tight leading-tight uppercase">
+            <h1 className="text-2xl font-bold tracking-tight leading-tight uppercase" style={{ color: primaryColor }}>
               RUMAH TAHANAN NEGARA KELAS I DEPOK
             </h1>
           </div>
@@ -269,23 +263,24 @@ const Display = () => {
           <p className="text-xs font-medium opacity-40 uppercase tracking-[0.2em] mb-1">
             {format(currentTime, "EEEE, dd MMMM yyyy", { locale: id })}
           </p>
-          <p className="text-5xl font-mono font-bold text-gold tracking-tighter leading-none">
+          <p className="text-5xl font-mono font-bold tracking-tighter leading-none" style={{ color: primaryColor }}>
             {format(currentTime, "HH:mm:ss")}
           </p>
         </div>
       </header>
 
-      <main className="flex-1 flex p-6 gap-6 overflow-hidden bg-gradient-to-b from-[#0a1120] to-[#0f172a]">
+      <main className="flex-1 flex p-6 gap-6 overflow-hidden relative z-10" style={{ background: `linear-gradient(to bottom, ${theme.colors.background}, ${theme.colors.background}cc)` }}>
         <div className="flex-[2.5] flex flex-col gap-6 h-full">
-          <div className="flex-1 rounded-2xl bg-[#1e293b]/60 border border-gold shadow-[0_0_25px_rgba(212,175,55,0.1)] p-1 overflow-hidden">
+          <div className="flex-1 rounded-2xl border p-1 overflow-hidden" style={{ backgroundColor: theme.colors.cardBg, borderColor: primaryColor + '60', boxShadow: `0 0 25px ${primaryColor}20` }}>
             <video src="/VIDEO PROFILE RUTAN DEPOK 2025.mp4" autoPlay loop muted playsInline className="w-full h-full object-cover rounded-2xl" />
           </div>
 
           <div className={mode === "NORMAL" ? "grid grid-cols-2 gap-6 h-40 shrink-0" : "flex gap-6 h-40 shrink-0"}>
-            <div className={`bg-[#1e293b]/60 rounded-2xl border-2 border-gold flex flex-col justify-center items-center px-6 ${mode === "SIMPLIFIED" ? "flex-1" : ""}`}>
-              <h4 className="text-gold text-xl font-semibold uppercase mb-2">PENDAFTARAN KUNJUNGAN</h4>
+            <div className={`rounded-2xl border-2 flex flex-col justify-center items-center px-6 ${mode === "SIMPLIFIED" ? "flex-1" : ""}`}
+              style={{ backgroundColor: theme.colors.cardBg, borderColor: primaryColor }}>
+              <h4 className="text-xl font-semibold uppercase mb-2" style={{ color: primaryColor }}>PENDAFTARAN KUNJUNGAN</h4>
               <div className="flex items-center gap-6">
-                <Users className="w-12 h-12 text-gold opacity-100" strokeWidth={2.5} />
+                <Users className="w-12 h-12" strokeWidth={2.5} style={{ color: primaryColor }} />
                 <div className="flex items-baseline gap-3">
                   <span className="text-6xl font-bold tracking-tighter text-white">{waitingA.length}</span>
                   <span className="text-sm font-medium opacity-40 uppercase">MENUNGGU</span>
@@ -310,8 +305,8 @@ const Display = () => {
 
         <div className="w-[580px] flex flex-col h-full">
           <div className={`grid h-full gap-3 ${mode === "NORMAL" ? "grid-rows-[64px_1fr_1fr_1fr_64px_1fr]" : "grid-rows-[64px_1fr_1fr_1fr_1fr]"}`}>
-            <div className="bg-gold/10 border border-gold/40 rounded-2xl flex items-center justify-center">
-              <span className="text-gold text-2xl font-semibold uppercase tracking-tight text-center">LAYANAN PENDAFTARAN KUNJUNGAN</span>
+            <div className="rounded-2xl flex items-center justify-center" style={{ backgroundColor: primaryColor + '20', border: `1px solid ${primaryColor}60` }}>
+              <span className="text-2xl font-semibold uppercase tracking-tight text-center" style={{ color: primaryColor }}>LAYANAN PENDAFTARAN KUNJUNGAN</span>
             </div>
 
             <LoketCard loket={1} ticket={calledByLoket[1]} />
@@ -332,9 +327,9 @@ const Display = () => {
         </div>
       </main>
 
-      <footer className="bg-gold h-12 flex items-center overflow-hidden shrink-0 relative">
+      <footer className="h-12 flex items-center overflow-hidden shrink-0 relative z-10" style={{ backgroundColor: primaryColor }}>
         <div className="animate-marquee-full">
-          <span className="text-[#0f172a] font-bold text-xl uppercase tracking-widest py-1">
+          <span className="font-bold text-xl uppercase tracking-widest py-1" style={{ color: theme.colors.background }}>
             {runningText}
           </span>
         </div>
