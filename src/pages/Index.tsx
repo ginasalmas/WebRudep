@@ -291,7 +291,7 @@ const Index = () => {
           <div className="mb-20">
             <h2 className="text-3xl font-bold mb-10 flex items-center gap-4">
               <span className="w-12 h-1.5 rounded-full" style={{ backgroundColor: primaryColor }}></span>
-              Manual &amp; Panduan Operasional Sistem
+              Panduan Penggunaan Sistem (Untuk Pemula)
             </h2>
 
             <div className="grid grid-cols-1 gap-12">
@@ -299,20 +299,23 @@ const Index = () => {
                 {/* Kiosk Instructions */}
                 <Card className="border backdrop-blur-sm p-6 rounded-[2rem]"
                   style={{ backgroundColor: theme.colors.cardBg, borderColor: 'rgba(255,255,255,0.1)' }}>
-                  <div className="flex items-center gap-4 mb-6">
+                  <div className="flex items-center gap-4 mb-4">
                     <div className="p-3 rounded-2xl" style={primaryBgStyle}><Ticket size={24} style={primaryColorStyle} /></div>
-                    <CardTitle className="text-2xl text-white">Unit Kiosk</CardTitle>
+                    <CardTitle className="text-2xl text-white">Layar Kiosk (Mesin Tiket)</CardTitle>
                   </div>
-                  <div className="space-y-6">
-                    <p className="text-sm text-white/60 leading-relaxed">Digunakan pengunjung untuk mencetak nomor antrian mandiri.</p>
-                    <div className="bg-black/30 rounded-2xl p-5 border border-white/5 space-y-4">
-                      <div className="flex justify-between items-center">
-                        <span className="text-xs text-white/80">Cetak Pendaftaran (A)</span>
-                        <kbd className="px-3 py-1 bg-white/10 rounded-lg border border-white/20 font-mono text-white text-xs">Enter</kbd>
+                  <div className="space-y-4">
+                    <p className="text-sm text-white/80 leading-relaxed">
+                      Layar ini diletakkan di depan agar <strong>pengunjung</strong> bisa mencetak nomor antrian mereka sendiri.
+                    </p>
+                    <div className="bg-black/30 rounded-2xl p-4 border border-white/5 space-y-4">
+                      <p className="text-xs text-white/60 mb-2">Jika layar disentuh tidak bisa, gunakan keyboard ini:</p>
+                      <div className="flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/10">
+                        <span className="text-sm text-white/90">Ambil Tiket <strong>Pendaftaran (A)</strong></span>
+                        <kbd className="px-3 py-1 bg-blue-600 rounded-lg font-bold text-white text-xs shadow-md">Tombol Enter</kbd>
                       </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-xs text-white/80">Cetak Informasi (B)</span>
-                        <kbd className="px-3 py-1 bg-white/10 rounded-lg border border-white/20 font-mono text-white text-xs">.</kbd>
+                      <div className="flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/10">
+                        <span className="text-sm text-white/90">Ambil Tiket <strong>Informasi (B)</strong></span>
+                        <kbd className="px-3 py-1 bg-emerald-600 rounded-lg font-bold text-white text-xs shadow-md">Tombol Titik (.)</kbd>
                       </div>
                     </div>
                   </div>
@@ -321,19 +324,33 @@ const Index = () => {
                 {/* Main Display Instructions */}
                 <Card className="border backdrop-blur-sm p-6 rounded-[2rem]"
                   style={{ backgroundColor: theme.colors.cardBg, borderColor: 'rgba(255,255,255,0.1)' }}>
-                  <div className="flex items-center gap-4 mb-6">
+                  <div className="flex items-center gap-4 mb-4">
                     <div className="p-3 bg-blue-500/10 rounded-2xl text-blue-400"><Monitor size={24} /></div>
-                    <CardTitle className="text-2xl text-white">Display Utama</CardTitle>
+                    <CardTitle className="text-2xl text-white">TV Ruang Tunggu Panggilan</CardTitle>
                   </div>
-                  <div className="space-y-6">
-                    <p className="text-sm text-white/60 leading-relaxed">Operasional standar untuk petugas di layanan utama rutan.</p>
-                    <div className="grid grid-cols-2 gap-3 text-[10px] bg-black/30 p-4 rounded-2xl border border-white/5">
-                      <div className="space-y-1">
-                        <p className="uppercase font-bold" style={primaryColorStyle}>Panggil: 1-4</p>
-                        <p className="text-blue-400 uppercase font-bold">Ulang: 7-9, 6</p>
-                      </div>
-                      <div className="text-right flex flex-col justify-center">
-                        <p className="text-red-400 uppercase font-bold">Reset: 0</p>
+                  <div className="space-y-4">
+                    <p className="text-sm text-white/80 leading-relaxed">
+                      Layar TV besar ini menampilkan nomor antrian. <strong>Petugas Loket</strong> menggunakan keyboard komputer untuk memanggil pengunjung.
+                    </p>
+                    <div className="bg-black/30 p-4 rounded-2xl border border-white/5">
+                      <p className="text-xs text-white/60 mb-3">Tekan tombol angka di atas huruf pada keyboard Anda:</p>
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center bg-white/5 p-2 px-3 rounded-lg">
+                          <span className="text-xs">Panggil Orang Berikutnya di Loket 1, 2, 3, 4</span>
+                          <kbd className="bg-blue-600 text-white px-2 py-1 rounded text-[10px] font-bold">Angka 1, 2, 3, 4</kbd>
+                        </div>
+                        <div className="flex justify-between items-center bg-white/5 p-2 px-3 rounded-lg">
+                          <span className="text-xs">Ulangi Panggilan Loket 1, 2, 3</span>
+                          <kbd className="bg-emerald-600 text-white px-2 py-1 rounded text-[10px] font-bold">Angka 7, 8, 9</kbd>
+                        </div>
+                        <div className="flex justify-between items-center bg-white/5 p-2 px-3 rounded-lg">
+                          <span className="text-xs">Ulangi Panggilan Loket 4</span>
+                          <kbd className="bg-emerald-600 text-white px-2 py-1 rounded text-[10px] font-bold">Angka 6</kbd>
+                        </div>
+                        <div className="flex justify-between items-center bg-red-500/10 p-2 px-3 rounded-lg border border-red-500/20">
+                          <span className="text-xs text-red-100">Kembalikan Antrian ke 0 (Dipagi Hari)</span>
+                          <kbd className="bg-red-600 text-white px-2 py-1 rounded text-[10px] font-bold">Angka 0</kbd>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -348,59 +365,68 @@ const Index = () => {
                     <div className="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-400 mb-6">
                       <Settings size={32} />
                     </div>
-                    <h3 className="text-2xl font-bold text-white mb-4">Layar Antrian Khusus</h3>
-                    <p className="text-sm text-white/60 leading-relaxed mb-8">Fitur fleksibel untuk mengatur 2 sampai 10 loket pendaftaran sekaligus.</p>
-                    <div className="space-y-4">
-                      <h4 className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Alur Penggunaan:</h4>
-                      <ul className="space-y-3">
-                        {["Buka halaman Antrian Khusus", "Atur jumlah loket aktif (2-10)", "Aktifkan/nonaktifkan loket informasi", "Gunakan Numpad keyboard untuk kontrol"].map((text, i) => (
-                          <li key={i} className="flex gap-3 text-xs text-white/80 items-center">
-                            <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] font-bold">{i + 1}</span>
-                            {text}
-                          </li>
-                        ))}
-                      </ul>
+                    <h3 className="text-2xl font-bold text-white mb-4">Layar Antrian Khusus (Banyak Loket)</h3>
+                    <div className="space-y-4 text-sm text-white/80">
+                      <p>
+                        Gunakan menu ini jika Anda butuh lebih dari 4 loket. Anda bisa mengatur berapa jumlah loket yang beroperasi hari ini dengan bebas.
+                      </p>
+                      <div className="bg-black/20 p-4 rounded-xl">
+                        <h4 className="font-bold text-white/90 mb-2">Langkah Penggunaan:</h4>
+                        <ol className="list-decimal pl-4 space-y-2 text-white/80">
+                          <li>Klik tombol <strong>"Konfigurasi"</strong> pada kotak warna hijau di bagian atas.</li>
+                          <li>Isi berapa loket yang sedang buka.</li>
+                          <li>Pilih apakah Loket Informasi (B) dipakai atau tidak.</li>
+                          <li>Gunakan tombol angka di sebelah kanan pojok keyboard (Numpad) untuk memanggil.</li>
+                        </ol>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex-1 space-y-8">
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="bg-black/30 rounded-3xl p-6 border border-white/5">
-                        <h4 className="text-xs font-bold flex items-center gap-2 mb-6 uppercase tracking-wider" style={primaryColorStyle}>
-                          <Keyboard size={14} /> Pintasan Pendaftaran (A)
-                        </h4>
-                        <div className="space-y-4 text-xs">
-                          <div className="flex justify-between items-center bg-white/5 p-3 rounded-2xl">
-                            <span>Panggil Tiket 1-9 &amp; 10</span>
-                            <kbd className="px-2 rounded-lg font-bold text-sm" style={{ backgroundColor: primaryColor, color: theme.colors.background }}>1-9 / + (Numpad)</kbd>
+                  <div className="flex-1 space-y-6">
+                    <div className="bg-black/30 rounded-3xl p-6 border border-white/5">
+                      <h4 className="text-sm font-bold flex items-center gap-2 mb-4" style={primaryColorStyle}>
+                        <Keyboard size={16} /> Cara Memanggil Pakai Numpad (Keyboard Kanan)
+                      </h4>
+                      <p className="text-xs text-white/60 mb-4">Pastikan lampu "Num Lock" di keyboard Anda menyala. Gunakan tombol angka di deretan paling kanan.</p>
+
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-3">
+                          <h5 className="text-xs font-semibold text-white bg-white/10 px-3 py-1 rounded-full inline-block">Loket Layanan (Tiket A)</h5>
+                          <div className="flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/10">
+                            <span className="text-xs text-white/90">Panggil <strong>Baru</strong> (Loket 1-9)</span>
+                            <kbd className="px-2 py-1 bg-blue-600 rounded text-[10px] font-bold text-white">Angka 1-9</kbd>
                           </div>
-                          <div className="flex justify-between items-center bg-white/5 p-3 rounded-2xl">
-                            <span>Panggil Ulang (Recall)</span>
-                            <kbd className="bg-blue-500 text-white px-2 rounded-lg font-bold">Shift + Key</kbd>
+                          <div className="flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/10">
+                            <span className="text-xs text-white/90">Panggil <strong>Baru</strong> (Loket 10)</span>
+                            <kbd className="px-2 py-1 bg-blue-600 rounded text-[10px] font-bold text-white">Tombol Plus (+)</kbd>
+                          </div>
+                          <div className="flex justify-between items-center bg-white/5 p-3 rounded-xl border-l-2 border-blue-400">
+                            <span className="text-xs text-white/90">Panggil <strong>Ulang</strong></span>
+                            <kbd className="px-2 py-1 bg-indigo-600 rounded text-[10px] font-bold text-white">Tahan Shift + Angka</kbd>
                           </div>
                         </div>
-                      </div>
-                      <div className="bg-emerald-500/5 rounded-3xl p-6 border border-emerald-500/10">
-                        <h4 className="text-xs font-bold text-emerald-400 flex items-center gap-2 mb-6 uppercase tracking-wider">
-                          <Info size={14} /> Pintasan Informasi (B)
-                        </h4>
-                        <div className="space-y-4 text-xs">
-                          <div className="flex justify-between items-center bg-emerald-500/10 p-3 rounded-2xl">
-                            <span>Panggil Tiket Informasi</span>
-                            <kbd className="bg-emerald-400 text-emerald-950 px-2 rounded-lg font-bold text-sm">* (Numpad)</kbd>
+
+                        <div className="space-y-3">
+                          <h5 className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full inline-block">Loket Informasi (Tiket B)</h5>
+                          <div className="flex justify-between items-center bg-emerald-500/5 p-3 rounded-xl border border-emerald-500/10">
+                            <span className="text-xs text-white/90">Panggil <strong>Baru</strong></span>
+                            <kbd className="px-2 py-1 bg-emerald-600 rounded text-[10px] font-bold text-white">Bintang (*)</kbd>
                           </div>
-                          <div className="flex justify-between items-center bg-emerald-500/10 p-3 rounded-2xl">
-                            <span>Panggil Ulang (Recall)</span>
-                            <kbd className="bg-emerald-300 text-emerald-950 px-2 rounded-lg font-bold text-[9px]">Shift + *</kbd>
+                          <div className="flex justify-between items-center bg-emerald-500/5 p-3 rounded-xl border border-emerald-500/10 border-l-2">
+                            <span className="text-xs text-white/90">Panggil <strong>Ulang</strong></span>
+                            <kbd className="px-2 py-1 bg-teal-600 rounded text-[10px] font-bold text-white">Shift + Bintang (*)</kbd>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div className="bg-red-500/5 rounded-3xl p-6 border border-red-500/10 flex items-center justify-between">
+
+                    <div className="bg-red-500/10 rounded-2xl p-5 border border-red-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                       <div>
-                        <p className="text-xs font-bold text-white">Reset Semua Antrian</p>
-                        <p className="text-[10px] text-red-100/40 uppercase tracking-wider">Gunakan tombol 0 pada keyboard</p>
+                        <p className="text-sm font-bold text-red-100 flex items-center gap-2">
+                          <RefreshCw size={16} /> Ulang Semua Nomor ke Nol (0)
+                        </p>
+                        <p className="text-xs text-red-100/70 mt-1">Lakukan ini setiap pagi hari agar antrian dimulai kembali dari A-001.</p>
                       </div>
-                      <kbd className="bg-red-600 text-white w-10 h-10 flex items-center justify-center rounded-xl font-bold border-2 border-red-500/50 text-xl shadow-lg shadow-red-900/40">0</kbd>
+                      <kbd className="bg-red-600 text-white px-6 py-3 rounded-xl font-bold border-b-4 border-red-800 text-lg shadow-lg shrink-0">Tombol Angka 0</kbd>
                     </div>
                   </div>
                 </div>
