@@ -2,7 +2,7 @@
 // Supports two service types: A (Pendaftaran) and B (Informasi)
 
 export type ServiceType = 'A' | 'B';
-export type ThemeMode = 'DEFAULT' | 'LEBARAN' | 'NATAL' | 'TAHUN_BARU' | 'NASIONAL';
+export type ThemeMode = 'DEFAULT' | 'LEBARAN' | 'NATAL' | 'TAHUN_BARU' | 'NASIONAL' | 'IMLEK';
 export type QueueMode = 'NORMAL' | 'SIMPLIFIED';
 
 export interface QueueTicket {

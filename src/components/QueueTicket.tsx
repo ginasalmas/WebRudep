@@ -1,19 +1,24 @@
 import { useRef } from "react";
 import { InstitutionLogo } from "./InstitutionLogo";
-import { QueueTicket as QueueTicketType } from "@/lib/queueStore";
+import { QueueTicket as QueueTicketType, ThemeMode, getInitialState } from "@/lib/queueStore";
+import { themes } from "@/lib/themes";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import Barcode from "react-barcode";
 import { Button } from "./ui/button";
 import { Printer } from "lucide-react";
+import { ThemeTicketDecoration, IslamicPattern, BatikPattern } from "./ThemeElements";
 
 interface QueueTicketProps {
   ticket: QueueTicketType;
   onPrint?: () => void;
+  themeId?: ThemeMode;
 }
 
-export const QueueTicket = ({ ticket, onPrint }: QueueTicketProps) => {
+export const QueueTicket = ({ ticket, onPrint, themeId }: QueueTicketProps) => {
   const ticketRef = useRef<HTMLDivElement>(null);
+  const currentThemeId = themeId || getInitialState().config.theme || 'DEFAULT';
+  const theme = themes[currentThemeId];
 
   const handlePrint = () => {
     if (ticketRef.current) {
@@ -33,7 +38,7 @@ export const QueueTicket = ({ ticket, onPrint }: QueueTicketProps) => {
                   padding: 4mm;
                   background: white;
                 }
-                .ticket { text-align: center; }
+                .ticket { text-align: center; position: relative; }
                 .header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
                 .logo { width: 40px; height: 40px; }
                 .institution { text-align: left; }
@@ -63,85 +68,127 @@ export const QueueTicket = ({ ticket, onPrint }: QueueTicketProps) => {
     onPrint?.();
   };
 
+  const getTicketBackground = () => {
+    switch (currentThemeId) {
+      case 'LEBARAN': return 'bg-emerald-950';
+      case 'NATAL': return 'bg-emerald-900';
+      case 'TAHUN_BARU': return 'bg-slate-900';
+      case 'NASIONAL': return 'bg-white';
+      case 'IMLEK': return 'bg-red-700';
+      default: return 'bg-card';
+    }
+  };
+
+  const getTextColor = () => {
+    return currentThemeId === 'NASIONAL' ? 'text-black' : 'text-white';
+  };
+
+  const getMutedTextColor = () => {
+    return currentThemeId === 'NASIONAL' ? 'text-gray-500' : 'text-white/60';
+  };
+
   return (
     <div className="flex flex-col items-center gap-4">
-      <div 
+      <div
         ref={ticketRef}
-        className="bg-card text-card-foreground p-4 rounded-lg shadow-elevated w-[302px] ticket"
-        style={{ fontFamily: "'Inter', sans-serif" }}
+        className={`${getTicketBackground()} ${getTextColor()} p-4 rounded-lg shadow-elevated w-[302px] ticket relative overflow-hidden transition-all duration-500`}
+        style={{
+          fontFamily: "'Inter', sans-serif",
+          border: currentThemeId === 'LEBARAN' ? `2px solid ${theme.colors.primary}` : undefined
+        }}
       >
+        {/* Background Patterns */}
+        {currentThemeId === 'LEBARAN' && (
+          <IslamicPattern className="absolute inset-0 opacity-[0.05] text-[#FFD700]" />
+        )}
+        {currentThemeId === 'NASIONAL' && (
+          <BatikPattern className="absolute inset-0 opacity-[0.03] text-red-900" />
+        )}
+
+        {/* Corner Decorations */}
+        <ThemeTicketDecoration theme={currentThemeId} position="top-right" />
+        <ThemeTicketDecoration theme={currentThemeId} position="bottom-left" />
+
         {/* Header with logo and institution name */}
-        <div className="header flex items-center gap-3 mb-3">
+        <div className="header flex items-center gap-3 mb-3 relative z-10">
           <div className="logo w-12 h-12 rounded-full bg-gradient-to-br from-gold to-gold-dark flex items-center justify-center flex-shrink-0">
             <svg viewBox="0 0 100 100" className="w-8 h-8" fill="none">
-              <path d="M50 5 L85 25 L85 60 Q85 85 50 95 Q15 85 15 60 L15 25 Z" fill="hsl(213 55% 18%)" stroke="hsl(43 75% 40%)" strokeWidth="2"/>
-              <path d="M50 20 L53 30 L64 30 L55 37 L59 48 L50 41 L41 48 L45 37 L36 30 L47 30 Z" fill="hsl(43 70% 50%)"/>
-              <rect x="35" y="52" width="30" height="28" fill="hsl(43 70% 50%)" rx="2"/>
-              <rect x="40" y="57" width="6" height="8" fill="hsl(213 55% 18%)" rx="1"/>
-              <rect x="54" y="57" width="6" height="8" fill="hsl(213 55% 18%)" rx="1"/>
-              <rect x="45" y="68" width="10" height="12" fill="hsl(213 55% 18%)" rx="1"/>
-              <path d="M30 54 L50 40 L70 54" stroke="hsl(43 70% 50%)" strokeWidth="3" fill="none" strokeLinecap="round"/>
+              <path d="M50 5 L85 25 L85 60 Q85 85 50 95 Q15 85 15 60 L15 25 Z" fill="hsl(213 55% 18%)" stroke="hsl(43 75% 40%)" strokeWidth="2" />
+              <path d="M50 20 L53 30 L64 30 L55 37 L59 48 L50 41 L41 48 L45 37 L36 30 L47 30 Z" fill="hsl(43 70% 50%)" />
+              <rect x="35" y="52" width="30" height="28" fill="hsl(43 70% 50%)" rx="2" />
+              <rect x="40" y="57" width="6" height="8" fill="hsl(213 55% 18%)" rx="1" />
+              <rect x="54" y="57" width="6" height="8" fill="hsl(213 55% 18%)" rx="1" />
+              <rect x="45" y="68" width="10" height="12" fill="hsl(213 55% 18%)" rx="1" />
+              <path d="M30 54 L50 40 L70 54" stroke="hsl(43 70% 50%)" strokeWidth="3" fill="none" strokeLinecap="round" />
             </svg>
           </div>
           <div className="institution text-left flex-1">
-            <div className="institution-name text-[10px] font-bold leading-tight text-foreground">
+            <div className={`institution-name text-[10px] font-bold leading-tight ${getTextColor()}`}>
               KEMENTERIAN IMIGRASI
             </div>
-            <div className="institution-name text-[10px] font-bold leading-tight text-foreground">
+            <div className={`institution-name text-[10px] font-bold leading-tight ${getTextColor()}`}>
               DAN PEMASYARAKATAN
             </div>
-            <div className="branch text-[9px] font-medium text-muted-foreground mt-0.5">
+            <div className={`branch text-[9px] font-medium ${getMutedTextColor()} mt-0.5`}>
               RUTAN KELAS I DEPOK
             </div>
           </div>
         </div>
 
         {/* Date and Time */}
-        <div className="datetime text-xs text-muted-foreground mb-2">
+        <div className={`datetime text-xs ${getMutedTextColor()} mb-2 relative z-10`}>
           {format(ticket.createdAt, "EEEE, dd MMMM yyyy", { locale: id })}
           <br />
           {format(ticket.createdAt, "HH:mm:ss")} WIB
         </div>
 
-        <div className="divider border-t border-dashed border-border my-3" />
+        <div className={`divider border-t border-dashed ${currentThemeId === 'NASIONAL' ? 'border-gray-200' : 'border-white/10'} my-3 relative z-10`} />
 
         {/* Queue Number Title */}
-        <div className="title text-sm font-semibold text-foreground">
+        <div className={`title text-sm font-semibold ${getTextColor()} relative z-10`}>
           Nomor Antrian
         </div>
 
         {/* Queue Number */}
-        <div className="number font-mono text-6xl font-bold tracking-[4px] text-primary my-2">
+        <div
+          className="number font-mono text-6xl font-bold tracking-[4px] my-2 relative z-10"
+          style={{ color: currentThemeId === 'NASIONAL' ? '#ef4444' : theme.colors.primary }}
+        >
           {ticket.formattedNumber}
         </div>
 
         {/* Barcode */}
-        <div className="barcode flex justify-center my-3">
-          <Barcode 
-            value={ticket.id} 
+        <div className="barcode flex justify-center my-3 relative z-10 invert brightness-200 contrast-200 opacity-80">
+          <Barcode
+            value={ticket.id}
             width={1.5}
             height={40}
             displayValue={false}
             background="transparent"
+            lineColor={currentThemeId === 'NASIONAL' ? '#000000' : '#FFFFFF'}
           />
         </div>
 
-        <div className="divider border-t border-dashed border-border my-3" />
+        <div className={`divider border-t border-dashed ${currentThemeId === 'NASIONAL' ? 'border-gray-200' : 'border-white/10'} my-3 relative z-10`} />
 
         {/* Service Type */}
-        <div className="service text-xs font-semibold tracking-wider text-primary">
-          LAYANAN KUNJUNGAN
+        <div
+          className="service text-xs font-semibold tracking-wider relative z-10"
+          style={{ color: currentThemeId === 'NASIONAL' ? '#ef4444' : theme.colors.primary }}
+        >
+          {ticket.serviceType === 'A' ? 'LAYANAN KUNJUNGAN' : 'INFORMASI & PENGADUAN'}
         </div>
 
         {/* Thanks message */}
-        <div className="thanks text-[10px] italic text-muted-foreground mt-2">
+        <div className={`thanks text-[10px] italic ${getMutedTextColor()} mt-2 relative z-10`}>
           ~Terimakasih Telah Menunggu~
         </div>
       </div>
 
-      <Button 
+      <Button
         onClick={handlePrint}
         className="no-print bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
+        style={{ backgroundColor: theme.colors.primary }}
       >
         <Printer className="w-4 h-4" />
         Cetak Tiket

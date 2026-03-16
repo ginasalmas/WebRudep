@@ -1,4 +1,4 @@
-export type ThemeMode = 'DEFAULT' | 'LEBARAN' | 'NATAL' | 'TAHUN_BARU' | 'NASIONAL';
+export type ThemeMode = 'DEFAULT' | 'LEBARAN' | 'NATAL' | 'TAHUN_BARU' | 'NASIONAL' | 'IMLEK';
 
 export interface ThemeConfig {
     id: ThemeMode;
@@ -42,72 +42,90 @@ export const themes: Record<ThemeMode, ThemeConfig> = {
         id: 'LEBARAN',
         name: 'Lebaran / Ramadhan',
         colors: {
-            primary: '#D4AF37', // Gold
-            secondary: '#064e3b', // Deep Green
-            accent: '#10b981', // Emerald
-            background: '#022c22',
-            cardBg: 'rgba(6, 78, 59, 0.4)',
-            text: '#ffffff',
-            textMuted: 'rgba(255, 255, 255, 0.7)',
+            primary: '#D4AF37', // Elegant Gold
+            secondary: '#0F4C3A', // Rich Emerald Green
+            accent: '#F3E5AB', // Soft Vanilla
+            background: '#06281D', // Deep Forest Green
+            cardBg: 'rgba(15, 76, 58, 0.4)',
+            text: '#F8FAFC',
+            textMuted: 'rgba(248, 250, 252, 0.65)',
         },
         gradients: {
-            header: 'from-gold via-yellow-100 to-gold',
-            main: 'from-[#022c22] to-[#064e3b]',
-            card: 'from-emerald-900/40 to-emerald-950/60',
+            header: 'from-[#D4AF37] via-[#F3E5AB] to-[#D4AF37]',
+            main: 'from-[#06281D] via-[#0A3D2A] to-[#0F4C3A]',
+            card: 'from-[#0F4C3A]/50 to-[#14664D]/50',
         },
     },
     NATAL: {
         id: 'NATAL',
         name: 'Natal / Christmas',
         colors: {
-            primary: '#ef4444', // Red
-            secondary: '#064e3b', // Green
-            accent: '#ffffff', // White
-            background: '#0a1120',
-            cardBg: 'rgba(153, 27, 27, 0.2)',
-            text: '#ffffff',
-            textMuted: 'rgba(255, 255, 255, 0.6)',
+            primary: '#C8102E', // Deep Christmas Red
+            secondary: '#1A4325', // Alpine Green
+            accent: '#D4AF37', // Classic Gold
+            background: '#0D2112', // Very Dark Green
+            cardBg: 'rgba(26, 67, 37, 0.4)',
+            text: '#F8FAFC',
+            textMuted: 'rgba(248, 250, 252, 0.7)',
         },
         gradients: {
-            header: 'from-red-500 via-white to-green-500',
-            main: 'from-[#0f172a] to-[#7f1d1d]',
-            card: 'from-red-900/40 to-red-950/60',
+            header: 'from-[#C8102E] via-[#D4AF37] to-[#C8102E]',
+            main: 'from-[#0D2112] via-[#112F1A] to-[#1A4325]',
+            card: 'from-[#1A4325]/50 to-[#2A5C37]/50',
         },
     },
     TAHUN_BARU: {
         id: 'TAHUN_BARU',
         name: 'Tahun Baru',
         colors: {
-            primary: '#ffffff', // White
-            secondary: '#000000', // Black
-            accent: '#D4AF37', // Gold
-            background: '#000000',
-            cardBg: 'rgba(31, 41, 55, 0.6)',
-            text: '#ffffff',
-            textMuted: 'rgba(255, 255, 255, 0.5)',
+            primary: '#FFD700', // Bright Gold
+            secondary: '#1A1B41', // Midnight Blue
+            accent: '#E0E0E0', // Silver
+            background: '#0B0C10', // Deep Black/Blue
+            cardBg: 'rgba(26, 27, 65, 0.5)',
+            text: '#FFFFFF',
+            textMuted: 'rgba(255, 255, 255, 0.65)',
         },
         gradients: {
-            header: 'from-white via-gold to-white',
-            main: 'from-black via-gray-900 to-black',
-            card: 'from-gray-800 to-black',
+            header: 'from-[#FFD700] via-[#FFFFFF] to-[#FFD700]',
+            main: 'from-[#0B0C10] via-[#14152A] to-[#1A1B41]',
+            card: 'from-[#1A1B41]/50 to-[#26285E]/50',
         },
     },
     NASIONAL: {
         id: 'NASIONAL',
         name: 'Hari Nasional',
         colors: {
-            primary: '#ef4444', // Red
-            secondary: '#ffffff', // White
-            accent: '#D4AF37', // Gold
-            background: '#450a0a',
-            cardBg: 'rgba(127, 29, 29, 0.4)',
-            text: '#ffffff',
-            textMuted: 'rgba(255, 255, 255, 0.8)',
+            primary: '#E53935', // Crimson Red
+            secondary: '#F8FAFC', // Slate White
+            accent: '#D4AF37', // Gold 
+            background: '#F1F5F9', // Light Slate
+            cardBg: 'rgba(255, 255, 255, 0.9)',
+            text: '#0F172A', // Slate 900
+            textMuted: '#64748B', // Slate 500
         },
         gradients: {
-            header: 'from-red-600 via-white to-red-600',
-            main: 'from-red-900 to-white/10',
-            card: 'from-red-800 to-red-950',
+            header: 'from-[#E53935] via-[#FF6B6B] to-[#E53935]',
+            main: 'from-[#F1F5F9] via-[#E2E8F0] to-[#F1F5F9]',
+            card: 'from-[#FFFFFF] to-[#F8FAFC]',
+        },
+    },
+    IMLEK: {
+        id: 'IMLEK',
+        name: 'Tahun Baru Imlek',
+        colors: {
+            primary: '#FFD700', // Imperial Gold
+            secondary: '#990000', // Deep Imperial Red
+            accent: '#FFA500', // Orange/Gold
+            background: '#4A0404', // Very Deep Red
+            cardBg: 'rgba(153, 0, 0, 0.4)',
+            text: '#F8FAFC',
+            textMuted: 'rgba(255, 215, 0, 0.7)',
+        },
+        gradients: {
+            header: 'from-[#FFD700] via-[#FFE55C] to-[#FFD700]',
+            main: 'from-[#4A0404] via-[#660000] to-[#990000]',
+            card: 'from-[#990000]/50 to-[#B30000]/50',
         },
     },
 };

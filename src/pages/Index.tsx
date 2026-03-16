@@ -16,10 +16,11 @@ const themeList: ThemeConfig[] = Object.values(themes);
 
 const themeEmojis: Record<ThemeMode, string> = {
   DEFAULT: '🌑',
-  LEBARAN: '🕌',
+  LEBARAN: '🌙',
   NATAL: '🎄',
   TAHUN_BARU: '🎆',
   NASIONAL: '🇮🇩',
+  IMLEK: '🧧',
 };
 
 const Index = () => {
