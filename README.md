@@ -1,74 +1,96 @@
 # Pendaftaran Rudep – Sistem Antrian Rumah Tahanan
 
-## Deskripsi Singkat
-Aplikasi **Pendaftaran Rudep** adalah sistem antrian berbasis web yang dirancang khusus untuk **Rumah Tahanan Negara Kelas I Depok**. Menampilkan nomor antrian secara real‑time, memanggil nomor lewat speaker, dan mencetak tiket otomatis pada printer thermal. Seluruh proses dapat dioperasikan dengan **keyboard shortcuts**, sehingga petugas loket melayani warga dengan cepat tanpa menyentuh layar.
+![Project Banner](https://img.shields.io/badge/Pendaftaran%20Rudep-Sistem%20Antrian-0f172a?style=for-the-badge&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
-## Fitur Utama
-- **Dua layanan**: Pendaftaran Kunjungan (A) dan Informasi & Pengaduan (B)
-- **Panggilan loket otomatis** menggunakan Text‑to‑Speech
-- **Cetak tiket** langsung ke printer thermal
-- **Reset antrian** seluruh nomor dengan satu klik
-- **Statistik menunggu** menampilkan jumlah orang yang menunggu tiap layanan
-- **Keyboard shortcuts**:
-  - `Enter` → Ambil nomor antrian **Layanan A** (Pendaftaran)
-  - `.` atau `Delete` → Ambil nomor antrian **Layanan B** (Informasi)
-  - `1`, `2`, `3` → Panggil nomor berikutnya untuk **Loket 1, 2, atau 3**
-  - `4` → Panggil nomor berikutnya untuk **Loket 4** (Informasi)
-  - `7`, `8`, `9` → **Panggil Ulang** nomor saat ini untuk **Loket 1, 2, atau 3**
-  - `6` → **Panggil Ulang** nomor saat ini untuk **Loket 4**
-  - `0` → Buka dialog **Reset Antrian** (kembali ke 0)
-- **Desain modern**: animasi glow, dark mode, dan video profil
+## 📖 Deskripsi Singkat
+Aplikasi **Pendaftaran Rudep** adalah sistem antrian interaktif dan responsif berbasis web yang dirancang khusus untuk **Rumah Tahanan Negara Kelas I Depok**. Aplikasi ini memfasilitasi pelayanan kunjungan serta informasi dan pengaduan melalui alur terstruktur yang modern. 
 
-## Cara Kerja (High‑Level)
-1. **Frontend** dibangun dengan **React**, **TypeScript**, dan **Vite** (folder `src/pages`).
-2. **State antrian** dikelola di `src/lib/queueStore.ts`.
-3. **Panggilan suara** di `src/lib/tts.ts` memakai Web Speech API.
-4. **Cetak tiket** di `src/lib/printTicket.ts` berinteraksi dengan `node-thermal-printer` (via Electron).
-5. **Keyboard listener** di `src/pages/Display.tsx` menangani semua shortcut dan memicu aksi di store.
+Keunggulan utama sistem ini adalah antarmuka yang elegan dengan dukungan animasi, mode layar ganda (Simplified/Normal), sistem *Text-to-Speech* untuk memanggil antrian secara otomatis, serta dukungan integrasi alat seperti *thermal printer* untuk langsung mencetak tiket antrian. Semuanya dapat dioperasikan tanpa menyentuh mouse/layar menggunakan dukungan *keyboard shortcuts* sepenuhnya.
 
-## Instalasi & Menjalankan (Development)
-### Prasyarat
-- Node.js ≥ 18
-- npm (tersedia bersama Node)
-- Git
+## ✨ Fitur Utama
+- **Dua Layanan Utama**: Pendaftaran Kunjungan (Layanan A) dan Informasi & Pengaduan (Layanan B).
+- **Mode Fleksibel (Simplified & Normal)**: Memungkinkan penyesuaian tampilan antrian khusus untuk 1 layanan (Pendaftaran saja) atau 2 layanan sekaligus.
+- **Panggilan Suara Otomatis**: Menggunakan fitur *Text-to-Speech* terintegrasi.
+- **Cetak Tiket Otomatis**: Tiket langsung dicetak ke *thermal printer* via *node-thermal-printer*.
+- **Holiday Themes (Tema Hari Raya)**: Desain UI otomatis beradaptasi dengan perayaan hari besar (Lebaran, Natal, Tahun Baru, Hari Nasional, Imlek) melalui sistem tematik terpadu.
+- **Custom Display / Antrian Khusus**: Opsi untuk memisahkan dan memusatkan tampilan antrian sesuai kebutuhan perangkat keras spesifik.
+- **Statistik Antrian Real-Time**: Memantau dan menampilkan jumlah pengguna yang sedang menunggu.
+- **Desain Modern & Profesional**: Animasi *glow*, tata letak responsif, dukungan video profil otomatis, dan kustomisasi *running text*. 
 
-### Langkah‑langkah
+## ⌨️ Keyboard Shortcuts (Penggunaan Cepat)
+Sistem ini dirancang untuk dioperasikan oleh operator dengan cepat menggunakan *keyboard*:
+
+| Tombol | Fungsi | Layanan / Deskripsi |
+| :---: | :--- | :--- |
+| `Enter` | **Ambil Nomor Antrian** | **Daftar Kunjungan (Layanan A)** - Mencetak tiket otomatis |
+| `.` / `Delete` | **Ambil Nomor Antrian** | **Info & Pengaduan (Layanan B)** (Khusus Mode Normal) |
+| `1` | **Panggil Antrian** | Loket 1 |
+| `2` | **Panggil Antrian** | Loket 2 |
+| `3` | **Panggil Antrian** | Loket 3 |
+| `4` | **Panggil Antrian** | Loket 4 (Informasi) |
+| `7` | **Panggil Ulang (Recall)** | Loket 1 |
+| `8` | **Panggil Ulang (Recall)** | Loket 2 |
+| `9` | **Panggil Ulang (Recall)** | Loket 3 |
+| `6` | **Panggil Ulang (Recall)** | Loket 4 (Informasi) |
+| `0` | **Reset Dialog** | Membuka konfirmasi untuk mengatur ulang (reset) semua antrian ke-0. |
+| `*` | **Ubah Mode Layar** | Berpindah antara mode `NORMAL` (2 Layanan) dan `SIMPLIFIED` (1 Layanan). |
+
+## 🛠️ Teknologi yang Digunakan
+* **Frontend Framework**: React 18, TypeScript, Vite
+* **Styling**: Tailwind CSS, Shadcn UI / Radix UI
+* **Icons**: Lucide React
+* **Data Management**: React State Management (`queueStore.ts`)
+* **Utilities**: `date-fns` (pemformatan waktu), `react-router-dom` (navigasi)
+
+## ⚙️ Cara Kerja Aplikasi (High-Level)
+1. **Frontend Architecture**: Komponen UI tersusun di folder `src/pages` (seperti `Display.tsx`, `Kiosk.tsx`, `CustomDisplay.tsx`, `Dashboard.tsx`).
+2. **State Management**: Seluruh status antrean (nomor aktif, daftar tunggu, mode, tema) dikelola secara terpusat di `src/lib/queueStore.ts`.
+3. **Panggilan Suara**: Dikelola oleh modul `src/lib/tts.ts` yang memanggil Web Speech API.
+4. **Cetak Tiket**: Ditangani di `src/lib/printTicket.ts` berinteraksi dengan API printer.
+5. **Keyboard Event Listener**: Di-bind pada level global di UI operator untuk memicu *action* tanpa harus menekan tombol UI di layar.
+
+## 🚀 Instalasi & Menjalankan (Development)
+### Prasyarat:
+- [Node.js](https://nodejs.org/) (versi ≥ 18 disarankan)
+- npm (termasuk di dalam instalasi Node.js)
+- Git (opsional)
+
+### Langkah-Langkah:
+1. **Clone Repository**
+   ```bash
+   git clone <URL_REPOSITORY_ANDA>
+   cd "Pendaftaran Rudep Web 2/Pendaftaran Rudep Web"
+   ```
+2. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+3. **Jalankan Development Server**
+   ```bash
+   npm run dev
+   ```
+   Aplikasi akan berjalan otomatis dan dapat diakses melalui `http://localhost:5173`.
+
+## 📦 Build & Deploy (Production)
+Untuk menggunakan aplikasi di komputer operasional:
 ```bash
-# Clone repository
-git clone <YOUR_GIT_URL>
-cd "Pendaftaran Rudep"
-# Install dependencies
-npm i
-# Jalankan server development
-npm run dev
-```
-Aplikasi akan tersedia di `http://localhost:5173`.
-
-## Build & Deploy (Production)
-```bash
-# Build aplikasi web
+# Membangun file statis web
 npm run build
-# Jika menggunakan Electron, bangun installer
-npm run electron:build   # sesuaikan dengan script di package.json
 ```
-Hasil build berada di folder `dist/`.
+File hasil *build* akan tersedia di direktori `dist/` dan dapat di-*serve* menggunakan *web server* seperti IIS, Nginx, atau Apache.
 
-## Panduan Penggunaan
-- **Header**: logo Kementerian Imigrasi, nama lembaga, tanggal & jam real‑time.
-- **Video profil**: diputar otomatis di pojok kanan atas.
-- **Statistik**: menampilkan jumlah menunggu layanan A & B.
-- **Kolom loket**: menampilkan nomor yang sedang dipanggil atau nomor terakhir.
-- **Footer**: marquee teks informasi penting.
-- **Dialog reset**: muncul saat menekan `0`; konfirmasi diperlukan sebelum reset.
+## 🤝 Kontribusi (Contributing)
+1. Fork repository ini
+2. Buat branch baru untuk fitur Anda (`git checkout -b fitur/TemaBaru`)
+3. Lakukan commit dari perubahan yang Anda buat (`git commit -m 'Menambahkan fitur TemaBaru'`)
+4. Push ke branch Anda (`git push origin fitur/TemaBaru`)
+5. Buat Pull Request dengan deskripsi jelas.
 
-## Kontribusi
-1. Fork repository ini.
-2. Buat branch baru (`git checkout -b fitur‑baru`).
-3. Lakukan perubahan, pastikan linting bersih.
-4. Buat Pull Request dengan deskripsi jelas.
-
-## Lisensi
-Proyek ini dilisensikan di bawah **MIT License** – lihat file `LICENSE` untuk detail.
+## 📄 Lisensi
+Proyek ini dilisensikan di bawah **MIT License** – lihat file `LICENSE` untuk detail lanjutan.
 
 ---
-*Dibuat dengan ❤️ oleh tim pengembang Pendaftaran Rudep*
+*Dibuat dengan ❤️ oleh tim pengembang Pendaftaran Rudep - 2026*
